@@ -3,3 +3,4 @@ requests
 bokeh
 statistics
 numpy
+jupyter_ai
