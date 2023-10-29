@@ -1,13 +1,15 @@
 import pandas as pd
 from bokeh.plotting import figure, show
 from bokeh.io import output_notebook
-from bokeh.palettes import Category20, cividis
+from bokeh.palettes import HighContrast
 from bokeh.models import (
     Legend,
     HoverTool,
     PrintfTickFormatter,
     ColumnDataSource,
     Range1d,
+    Title,
+    BasicTickFormatter
 )
 from IPython import get_ipython
 from IPython.display import display, Markdown
@@ -23,40 +25,50 @@ def generate_graph(
     cfa_df: pd.DataFrame, non_cfa_df: pd.DataFrame, metric_name: str, unit: str
 ) -> figure:
     p = figure(
-        title=f"{metric_name}",
-        x_axis_label="Year",
-        y_axis_label=unit,
+        title=f"Median {metric_name}\nCFA African Countries vs. Non-CFA African Countries \n",
+        x_axis_label="\nYear",
+        y_axis_label=f"{unit}\n",
         width=1000,
         height=400,
+        toolbar_location=None
     )
     p.line(
         x="year",
         y="median",
-        color="rosybrown",
+        # color="#004488",
+        color = '#D55E00',
         line_width=2,
-        legend_label=f"Non-CFA Median {metric_name}",
+        legend_label="Non-CFA",
         source=ColumnDataSource(non_cfa_df),
+        line_alpha=0.7
     )
     p.line(
         x="year",
         y="median",
-        color="cornflowerblue",
+        # color='#DDAA33',
+        color ='#0072B2',
         line_width=2,
-        legend_label=f"CFA Median {metric_name}",
+        legend_label="CFA",
         source=ColumnDataSource(cfa_df),
+        line_alpha=0.7
     )
     for legend in p.legend:
         p.add_layout(legend, "right")
-    # hover = HoverTool(tooltips=[("Year", "@x"), (metric_name, "@y")], formatters={"@x": "numeral", "@y": "numeral"})
-    # p.add_tools(hover)
-    # p.yaxis[0].formatter = PrintfTickFormatter(format="%d")
+    hover = HoverTool(tooltips=[("Year", "@year"), (metric_name, "@median{0.00}")])
+    p.add_tools(hover)
+    
     p.legend.click_policy = "hide"
-    p.xgrid.grid_line_color = None
-    p.ygrid.grid_line_color = None
-    p.xaxis.major_tick_line_color = None  # turn off x-axis major ticks
+    p.xgrid.grid_line_color = "#DDDDDD"
+    p.ygrid.grid_line_color = "#DDDDDD"
+    p.title.text_font_size = '18pt'
     p.xaxis.minor_tick_line_color = None  # turn off x-axis minor ticks
-    p.yaxis.major_tick_line_color = None  # turn off y-axis major ticks
     p.yaxis.minor_tick_line_color = None  # turn off y-axis minor ticks
+    p.axis.axis_label_text_font_size  = '12pt'
+    p.axis.axis_label_text_font_style = 'bold'
+    p.axis.major_label_text_font_size = "12px"
+    p.xaxis.major_label_orientation = 1.0
+    p.legend.border_line_color = None
+    p.legend.border_line_alpha = 0
     return p
 
 
@@ -65,6 +77,7 @@ def chat_gpt_analyze_results(
     years: List[int],
     intervals_where_median_is_higher: str,
     description: str,
+    unit: str,
 ):
     get_ipython().run_cell_magic(
         "ai", "openai-chat:gpt-3.5-turbo -r", "reset the chat history"
@@ -73,20 +86,19 @@ def chat_gpt_analyze_results(
         "ai",
         "openai-chat:gpt-3.5-turbo -f markdown",
         f"""
-            Professional tone like a macro economist: For {indicator} {intervals_where_median_is_higher} had more intervals with a higher median? Is it economically better for {indicator} to be higher
-            or lower? To help with answering this question and explaining the indicator in the later section What is {indicator} please consider the {description}
-            I am providing you about the {indicator}.Based on your response to that draw a conclusion comparing african cfa franc zone countries and 
-            african non cfa franc zone countries.
+            In a professional tone like an economist: 
+            I have this {indicator} that is measured in unit {unit} and can be described as {description}.
+            Is it better for economic development for {indicator} to be higher or lower?
+            Based on the previous response, for {indicator} {intervals_where_median_is_higher} had more yearly intervals with a higher median from the 1980s to 2023. please draw a conclusion comparing african cfa franc zone countries and african non cfa franc zone countries.
             
             Please format response in markdown like this:
             # Since the 1980s, {indicator} comparison between CFA African Franc Zone Countries and Non CFA African Franc Zone Countries
             ### What is {indicator}? 
-            in this section explain what the indicator means
+            in this section explain what the indicator means and if it is better for economic development for {indicator} to be higher or lower?
             ### Conclusion
-            in this section make a simple conclusion comparing CFA African Franc Zone Countries and Non CFA African Franc Zone Countries.
+            In this section make a simple conclusion comparing CFA African Franc Zone Countries and Non CFA African Franc Zone Countries.
         """,
     )
-
 
 # def graph_inflation_of_countries(list_of_countries:list):
 #     abbr = [countries[x] for x in list_of_countries] # countries is from imf

@@ -1,0 +1,11 @@
+.ipynb_checkpoints/
+bin/
+etc/
+include/
+lib/
+lib64
+pyvenv.cfg
+share/
+src/cfa_analysis.egg-info/
+src/cfa_analysis/.ipynb_checkpoints/
+src/cfa_analysis/__pycache__/
