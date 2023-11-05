@@ -1,6 +1,6 @@
 from .data_retrieval import get_data_from_imf
 
-cfa_franc_zone = [
+CFA_FRANC_ZONE = [
     "Benin",
     "Burkina Faso",
     "Cameroon",
@@ -17,7 +17,7 @@ cfa_franc_zone = [
     "Togo",
 ]
 
-chunk1_non_cfa = [
+NON_CFA_CHUNK_1 = [
     "Algeria",
     "Botswana",
     "Burundi",
@@ -46,7 +46,7 @@ chunk1_non_cfa = [
     "Rwanda",
 ]
 
-chunk2_non_cfa = [
+NON_CFA_CHUNK_2 = [
     "São Tomé and Príncipe",
     "Seychelles",
     "Sierra Leone",

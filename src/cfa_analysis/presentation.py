@@ -1,6 +1,6 @@
 import pandas as pd
 from bokeh.plotting import figure, show
-from bokeh.io import output_notebook
+from bokeh.io import output_notebook, curdoc
 from bokeh.palettes import HighContrast
 from bokeh.models import (
     Legend,
@@ -9,7 +9,7 @@ from bokeh.models import (
     ColumnDataSource,
     Range1d,
     Title,
-    BasicTickFormatter
+    BasicTickFormatter,
 )
 from IPython import get_ipython
 from IPython.display import display, Markdown
@@ -21,54 +21,87 @@ from .data_retrieval import (
 )
 
 
-def generate_graph(
-    cfa_df: pd.DataFrame, non_cfa_df: pd.DataFrame, metric_name: str, unit: str
-) -> figure:
+def generate_graph(merged_df: pd.DataFrame, metric_name: str, unit: str) -> figure:
+    curdoc().theme = "light_minimal"
     p = figure(
-        title=f"Median {metric_name}\nCFA African Countries vs. Non-CFA African Countries \n",
-        x_axis_label="\nYear",
-        y_axis_label=f"{unit}\n",
+        x_axis_label="Year",
+        y_axis_label=f"{unit}",
         width=1000,
         height=400,
-        toolbar_location=None
+        toolbar_location=None,
     )
     p.line(
         x="year",
-        y="median",
-        # color="#004488",
-        color = '#D55E00',
+        y="median_non_cfa",
+        color="#D55E00",
         line_width=2,
         legend_label="Non-CFA",
-        source=ColumnDataSource(non_cfa_df),
-        line_alpha=0.7
+        source=ColumnDataSource(merged_df),
+        line_alpha=0.7,
     )
     p.line(
         x="year",
-        y="median",
-        # color='#DDAA33',
-        color ='#0072B2',
+        y="median_cfa",
+        color="#0072B2",
         line_width=2,
         legend_label="CFA",
-        source=ColumnDataSource(cfa_df),
-        line_alpha=0.7
+        source=ColumnDataSource(merged_df),
+        line_alpha=0.7,
     )
     for legend in p.legend:
         p.add_layout(legend, "right")
-    hover = HoverTool(tooltips=[("Year", "@year"), (metric_name, "@median{0.00}")])
+
+    hover = HoverTool(
+        tooltips=[
+            ("Year", "@year"),
+            (f"Median {metric_name} (Non-CFA)", "@median_non_cfa{0.00}"),
+            (f"Median {metric_name} (CFA)", "@median_cfa{0.00}"),
+        ]
+    )
     p.add_tools(hover)
-    
-    p.legend.click_policy = "hide"
-    p.xgrid.grid_line_color = "#DDDDDD"
-    p.ygrid.grid_line_color = "#DDDDDD"
-    p.title.text_font_size = '18pt'
-    p.xaxis.minor_tick_line_color = None  # turn off x-axis minor ticks
-    p.yaxis.minor_tick_line_color = None  # turn off y-axis minor ticks
-    p.axis.axis_label_text_font_size  = '12pt'
-    p.axis.axis_label_text_font_style = 'bold'
+
+    p.add_layout(
+        Title(
+            text="CFA African Countries vs. Non-CFA African Countries\n\n",
+            text_font_size="12pt",
+            text_align="center",
+            align="center",
+            text_font_style="normal",
+        ),
+        "above",
+    )
+    p.add_layout(
+        Title(
+            text=f"Median {metric_name}",
+            text_font_size="18pt",
+            text_align="center",
+            align="center",
+        ),
+        "above",
+    )
+    p.title.offset = 200
+    p.title.align = "center"
+
+    # p.xgrid.grid_line_color = "#DDDDDD"
+    # p.ygrid.grid_line_color = "#DDDDDD"
+
+    p.axis.minor_tick_line_color = None  # turn off x-axis minor ticks
+    # p.axis.major_tick_line_alpha =  0.1
+    p.axis.major_tick_line_color = "#AAAAAA"
+    p.axis.major_tick_line_dash = "dashed"
+
+    p.axis.axis_label_text_font_size = "12pt"
+    p.axis.axis_label_text_font_style = "bold"
     p.axis.major_label_text_font_size = "12px"
+    p.axis.axis_label_standoff = 20
     p.xaxis.major_label_orientation = 1.0
+
     p.legend.border_line_color = None
     p.legend.border_line_alpha = 0
+    p.legend.click_policy = "hide"
+
+    p.min_border = 100
+
     return p
 
 
@@ -92,13 +125,13 @@ def chat_gpt_analyze_results(
             Based on the previous response, for {indicator} {intervals_where_median_is_higher} had more yearly intervals with a higher median from the 1980s to 2023. please draw a conclusion comparing african cfa franc zone countries and african non cfa franc zone countries.
             
             Please format response in markdown like this:
-            # Since the 1980s, {indicator} comparison between CFA African Franc Zone Countries and Non CFA African Franc Zone Countries
             ### What is {indicator}? 
             in this section explain what the indicator means and if it is better for economic development for {indicator} to be higher or lower?
             ### Conclusion
             In this section make a simple conclusion comparing CFA African Franc Zone Countries and Non CFA African Franc Zone Countries.
         """,
     )
+
 
 # def graph_inflation_of_countries(list_of_countries:list):
 #     abbr = [countries[x] for x in list_of_countries] # countries is from imf

@@ -24,22 +24,24 @@ def generate_median_df(df: pd.DataFrame) -> pd.DataFrame:
     return median_df
 
 
-def analyze_medians(
-    median_cfa_df: pd.DataFrame, median_non_cfa_df: pd.DataFrame
-) -> tuple:
-    merge_df = pd.merge(median_cfa_df, median_non_cfa_df, on="year")
-    merge_df.rename(
-        columns={"median_x": "median_cfa", "median_y": "median_non_cfa"}, inplace=True
-    )
+def analyze_medians(merge_df: pd.DataFrame) -> tuple:
     merge_df["cfa_median_greater"] = merge_df["median_cfa"] > merge_df["median_non_cfa"]
     number_of_times_cfa_median_is_greater = merge_df["cfa_median_greater"].sum()
     number_of_times_non_cfa_median_is_greater = (
         len(merge_df) - number_of_times_cfa_median_is_greater
     )
     if (
+        abs(
+            number_of_times_cfa_median_is_greater
+            - number_of_times_non_cfa_median_is_greater
+        )
+        <= 2
+    ):
+        intervals_where_median_is_higher = "CFA and Non CFA were equal"
+    elif (
         number_of_times_cfa_median_is_greater
         > number_of_times_non_cfa_median_is_greater
-    ):  # needs equal logic
+    ):
         intervals_where_median_is_higher = "Cfa African Franc Zone Countries"
     else:
         intervals_where_median_is_higher = "Non Cfa African Franc Zone Countries"

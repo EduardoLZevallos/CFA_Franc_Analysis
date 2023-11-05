@@ -19,7 +19,6 @@ def find_outliers_IQR(df: pd.DataFrame) -> pd.DataFrame:
 def remove_outliers(
     original_df: pd.DataFrame, outlier_df: pd.DataFrame
 ) -> pd.DataFrame:
-    """40 countries per year in the noncfa, so i think its fine to remove outliers"""
     original_df[outlier_df.notna()] = np.nan
     return original_df
 
