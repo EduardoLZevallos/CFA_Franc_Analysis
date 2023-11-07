@@ -1,64 +1,83 @@
-from .data_retrieval import get_data_from_imf
-
 CFA_FRANC_ZONE = [
-    "Benin",
-    "Burkina Faso",
-    "Cameroon",
-    "Central African Republic",
-    "Chad",
-    "Congo, Republic of ",
-    "Côte d'Ivoire",
-    "Equatorial Guinea",
-    "Gabon",
-    "Guinea-Bissau",
-    "Mali",
-    "Niger",
-    "Senegal",
-    "Togo",
+    "Benin",  # west
+    "Burkina Faso",  # west
+    "Côte d'Ivoire",  # west
+    "Guinea-Bissau",  # west
+    "Mali",  # west
+    "Niger",  # west
+    "Senegal",  # west
+    "Togo",  # west
+    "Cameroon",  # middle
+    "Central African Republic",  # middle
+    "Chad",  # middle
+    "Congo, Republic of ",  # middle
+    "Equatorial Guinea",  # middle
+    "Gabon",  # middle
 ]
 
-NON_CFA_CHUNK_1 = [
-    "Algeria",
-    "Botswana",
-    "Burundi",
-    "Cabo Verde",
-    "Comoros",
-    "Djibouti",
-    "Egypt",
-    "Eritrea",
-    "Eswatini",
-    "Ethiopia",
-    "Gambia, The",
-    "Ghana",
-    "Guinea",
-    "Kenya",
-    "Lesotho",
-    "Liberia",
-    "Libya",
-    "Madagascar",
-    "Malawi",
-    "Mauritania",
-    "Mauritius",
-    "Morocco",
-    "Mozambique",
-    "Namibia",
-    "Nigeria",
-    "Rwanda",
+WEST_AFRICA = [
+    "Cabo Verde",  # West
+    "Gambia, The",  # West
+    "Ghana",  # West
+    "Guinea",  # West
+    "Liberia",  # West
+    "Mauritania",  # West
+    "Sierra Leone",  # West
+    "Nigeria",  # Western
 ]
 
-NON_CFA_CHUNK_2 = [
-    "São Tomé and Príncipe",
-    "Seychelles",
-    "Sierra Leone",
-    "Somalia",
-    "South Africa",
-    "South Sudan, Republic of",
-    "Sudan",
-    "Tanzania",
-    "Tunisia",
-    "Uganda",
-    "Zambia",
-    "Zimbabwe",
-    "Angola",
-    "Congo, Dem. Rep. of the",
+MIDDLE_AFRICA = [
+    "São Tomé and Príncipe",  # middle
+    "Angola",  # middle
+    "Congo, Dem. Rep. of the",  # middle
+]
+
+NORTH_AFRICA = [
+    "Algeria",  # Northern
+    "Egypt",  # Northern
+    "Libya",  # Northern
+    "Morocco",  # Northern
+    "Sudan",  # Northern
+    "Tunisia",  # Northern
+]
+
+EASTERN_AFRICA = [
+    "Burundi",  # Eastern
+    "Comoros",  # Eastern
+    "Djibouti",  # Eastern
+    "Eritrea",  # Eastern
+    "Ethiopia",  # Eastern
+    "Kenya",  # Eastern
+    "Madagascar",  # Eastern
+    "Malawi",  # Eastern
+    "Mauritius",  # Eastern
+    "Mozambique",  # Eastern
+    "Rwanda",  # Eastern
+    "Seychelles",  # Eastern
+    "Somalia",  # Eastern
+    "South Sudan, Republic of",  # Eastern
+    "Tanzania",  # Eastern
+    "Uganda",  # Eastern
+    "Zambia",  # Eastern
+    "Zimbabwe",  # Eastern
+]
+
+SOUTH_AFRICA = [
+    "Botswana",  # South
+    "Eswatini",  # South
+    "Lesotho",  # South
+    "Namibia",  # South
+    "South Africa",  # South
+]
+
+MISSING = [
+    "Canary Islands (Spain)"  # Northern
+    "Ceuta (Spain)"  # Northern
+    "Madeira (Portugal)"  # Northern
+    "Melilla (Spain)"  # Northern
+    "Western Sahara"  # Northern
+    "French Southern and Antarctic Lands (France)"  # Eastern
+    "Mayotte (France)"  # Eastern
+    "Reunion (France)"  # Eastern
+    "Somaliland (Somalia)"  # Eastern
 ]

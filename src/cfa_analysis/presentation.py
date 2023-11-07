@@ -21,31 +21,31 @@ from .data_retrieval import (
 )
 
 
-def generate_graph(merged_df: pd.DataFrame, metric_name: str, unit: str) -> figure:
+def generate_graph(merged_df_dict: dict, metric_name: str, unit: str) -> figure:
     curdoc().theme = "light_minimal"
     p = figure(
         x_axis_label="Year",
         y_axis_label=f"{unit}",
-        width=1000,
+        width=800,
         height=400,
         toolbar_location=None,
     )
     p.line(
-        x="year",
-        y="median_non_cfa",
+        x="Year",
+        y="noncfa_median",
         color="#D55E00",
         line_width=2,
         legend_label="Non-CFA",
-        source=ColumnDataSource(merged_df),
+        source=ColumnDataSource(merged_df_dict),
         line_alpha=0.7,
     )
     p.line(
-        x="year",
-        y="median_cfa",
+        x="Year",
+        y="cfa_median",
         color="#0072B2",
         line_width=2,
         legend_label="CFA",
-        source=ColumnDataSource(merged_df),
+        source=ColumnDataSource(merged_df_dict),
         line_alpha=0.7,
     )
     for legend in p.legend:
@@ -53,9 +53,9 @@ def generate_graph(merged_df: pd.DataFrame, metric_name: str, unit: str) -> figu
 
     hover = HoverTool(
         tooltips=[
-            ("Year", "@year"),
-            (f"Median {metric_name} (Non-CFA)", "@median_non_cfa{0.00}"),
-            (f"Median {metric_name} (CFA)", "@median_cfa{0.00}"),
+            ("Year", "@Year"),
+            (f"Median {metric_name} (Non-CFA)", "@noncfa_median{0.00}"),
+            (f"Median {metric_name} (CFA)", "@cfa_median{0.00}"),
         ]
     )
     p.add_tools(hover)
