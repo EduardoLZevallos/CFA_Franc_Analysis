@@ -1,4 +1,4 @@
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Tuple
 import polars as pl
 from IPython.display import display, Markdown
 from bokeh.plotting import show
@@ -8,6 +8,10 @@ from .constants import CFA_FRANC_ZONE, WEST_AFRICA, MIDDLE_AFRICA
 
 
 def analyze_medians(merged_df: pl.DataFrame) -> tuple:
+    """ Calculates the number of times the median is higher,
+    if the difference in median counts is less than or 
+    equal to two then considers the count the same 
+    """ 
     median_count = merged_df.select(
         (pl.col("noncfa_median") > pl.col("cfa_median"))
         .sum()
@@ -42,7 +46,9 @@ def analyze_medians(merged_df: pl.DataFrame) -> tuple:
 
 
 def get_median_df(all_data_df: pl.DataFrame, indicator_label: str) -> pl.DataFrame:
-    median_df = (
+    """ Returns the medians for cfa and noncfa african countries as a 
+    new dataframe, drops nulls and renames columns"""
+    return (
         all_data_df.group_by(["Year"], maintain_order=True)
         .agg(
             pl.col(indicator_label)
@@ -60,47 +66,35 @@ def get_median_df(all_data_df: pl.DataFrame, indicator_label: str) -> pl.DataFra
             ),
             on="Year",
         )
-    )
-    median_df.columns = ["Year", "cfa_median", "noncfa_median"]
-    return median_df
+    ).drop_nulls().rename({indicator_label: 'cfa_median', f"{indicator_label}_right": 'noncfa_median'}).with_columns(pl.col("cfa_median").abs().alias('abs_cfa_median'),
+                pl.col("noncfa_median").abs().alias('abs_noncfa_median')
+                )
 
 
 def process_single_indicator(
-    indicator_abbrv: str,
-    only_these_indicators: Optional[List[str]],
-    countries: Dict[str, str],
-    all_countries: Dict[str, Any],
-    indicators: Dict[str, Any],
+    all_data_df:pl.DataFrame,
+    indicator_label: str,
+    indicator_unit: str, 
+    indicator_description: str, 
 ) -> None:
-    indicator_info = indicators[indicator_abbrv]
-    indicator_label = indicator_info.get("label", "").strip("\n")
-    unit = indicator_info.get("unit", "").strip("\n")
-    description = indicator_info.get("description", "")
-    try:
-        # one approach, merge all the dict, create one df , then use exp to get cols to do groupby
-        all_data_dict = get_cfa_and_noncfa_data(
-            indicator_abbrv, countries, all_countries
+    """ helps generate report, calls median function
+    generates the report, calls chatgpt and formats """
+    median_df = get_median_df(all_data_df, indicator_label)
+    p = generate_graph(median_df.to_dict(as_series=False), indicator_label, indicator_unit)
+    display(
+        Markdown(
+            f"""## {indicator_label} comparison between CFA African Franc Zone Countries and Non CFA African Franc Zone Countries"""
         )
-        all_data_df = get_imf_data_df(all_data_dict, indicator_label)
-        median_df = get_median_df(all_data_df, indicator_label)
-        p = generate_graph(median_df.to_dict(as_series=False), indicator_label, unit)
-        display(
-            Markdown(
-                f"""## {indicator_label} comparison between CFA African Franc Zone Countries and Non CFA African Franc Zone Countries"""
-            )
-        )
-        show(p)
-        intervals_where_median_is_higher, years = analyze_medians(median_df)
-        display(
-            chat_gpt_analyze_results(
-                indicator_label,
-                years,
-                intervals_where_median_is_higher,
-                description,
-                unit,
-            )
-        )
-    except Exception as e:
-        print(
-            f"issue with indicator {indicator_label}, abbrv: {indicator_abbrv}, exception: {e}"
-        )
+    )
+    show(p)
+    
+    # intervals_where_median_is_higher, years = analyze_medians(median_df)
+    # display(
+    #     chat_gpt_analyze_results(
+    #         indicator_label,
+    #         years,
+    #         intervals_where_median_is_higher,
+    #         indicator_description,
+    #         indicator_unit,
+    #     )
+    # )

@@ -1,6 +1,8 @@
 import pandas as pd
-from  cfa_analysis.median_analysis import generate_median_df, analyze_medians
+import pytest
+from  cfa_analysis.analysis import analyze_medians
 
+@pytest.mark.skip(reason = 'removed this function might test polars function impl')
 def test_generate_median_df_multiple_columns():
     # GIVEN
     df = pd.DataFrame({'2026': {'Benin': 15.957120583638,
@@ -54,7 +56,7 @@ def test_generate_median_df_multiple_columns():
      'median': {0: 18.043181752746, 1: 18.3379520609885, 2: 17.842979922725}}
     )
     pd.testing.assert_frame_equal(median_df, expected_result)
-    
+
 def test_analyze_medians_non_cfa_higher_medians():
     # GIVEN
     merge_df = pd.DataFrame( {'year': [2019, 2020, 2021],

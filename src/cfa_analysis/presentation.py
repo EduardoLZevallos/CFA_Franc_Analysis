@@ -10,10 +10,11 @@ from bokeh.models import (
     Range1d,
     Title,
     BasicTickFormatter,
+    Range1d
 )
 from IPython import get_ipython
 from IPython.display import display, Markdown
-from typing import Optional, List
+from typing import Optional, List, Dict
 from .data_retrieval import (
     get_data_from_imf,
     rename_from_abbr_to_full_name,
@@ -21,20 +22,56 @@ from .data_retrieval import (
 )
 
 
-def generate_graph(merged_df_dict: dict, metric_name: str, unit: str) -> figure:
+def generate_graph(merged_df_dict: Dict, metric_name: str, unit: str) -> figure:
     curdoc().theme = "light_minimal"
-    p = figure(
-        x_axis_label="Year",
-        y_axis_label=f"{unit}",
-        width=800,
-        height=400,
-        toolbar_location=None,
-    )
+    no_log_scale_metrics = [
+        ('Real GDP Growth Rate', 'Annual % change'),
+        ('Inflation Rate, Average Consumer Prices','Annual % change'), 
+        ('Inflation Rate, End Of Period Consumer Prices', 'Annual % change'),
+        ('Private Inflows Excluding Direct Investment (% Of GDP)', 'Percent'),
+        ('Private Outflows Excluding Direct Investment (% Of GDP)', 'Percent'),
+        ('Real Non-oil GDP Growth', 'Annual % change'),
+                         
+                        ]
+    if (metric_name, unit) in no_log_scale_metrics:
+        p = figure(
+            x_axis_label="Year",
+            y_axis_label=f"{unit}",
+            width=800,
+            height=400,
+            toolbar_location=None,
+        )
+    else:
+        p = figure(
+            x_axis_label="Year",
+            y_axis_label=f"{unit}",
+            width=800,
+            height=400,
+            toolbar_location=None,
+            y_axis_type="log"
+        )
+        p.line(
+            x="Year",
+            y="abs_noncfa_median",
+            color="#D55E00",
+            line_width=2,
+            source=ColumnDataSource(merged_df_dict),
+            line_alpha=0.4,
+        )
+        p.line(
+            x="Year",
+            y="abs_cfa_median",
+            color="#0072B2",
+            line_width=2,
+            source=ColumnDataSource(merged_df_dict),
+            line_alpha=0.4,
+        )
+        
     p.line(
         x="Year",
         y="noncfa_median",
         color="#D55E00",
-        line_width=2,
+        line_width=3,
         legend_label="Non-CFA",
         source=ColumnDataSource(merged_df_dict),
         line_alpha=0.7,
@@ -43,11 +80,12 @@ def generate_graph(merged_df_dict: dict, metric_name: str, unit: str) -> figure:
         x="Year",
         y="cfa_median",
         color="#0072B2",
-        line_width=2,
+        line_width=3,
         legend_label="CFA",
         source=ColumnDataSource(merged_df_dict),
         line_alpha=0.7,
     )
+
     for legend in p.legend:
         p.add_layout(legend, "right")
 
@@ -95,13 +133,14 @@ def generate_graph(merged_df_dict: dict, metric_name: str, unit: str) -> figure:
     p.axis.major_label_text_font_size = "12px"
     p.axis.axis_label_standoff = 20
     p.xaxis.major_label_orientation = 1.0
+    p.yaxis[0].formatter = BasicTickFormatter(use_scientific = False)
+    # p.yaxis[0].formatter = PrintfTickFormatter(format="%2f")
 
     p.legend.border_line_color = None
     p.legend.border_line_alpha = 0
     p.legend.click_policy = "hide"
 
     p.min_border = 100
-
     return p
 
 
@@ -119,16 +158,14 @@ def chat_gpt_analyze_results(
         "ai",
         "openai-chat:gpt-3.5-turbo -f markdown",
         f"""
-            In a professional tone like an economist: 
-            I have this {indicator} that is measured in unit {unit} and can be described as {description}.
-            Is it better for economic development for {indicator} to be higher or lower?
-            Based on the previous response, for {indicator} {intervals_where_median_is_higher} had more yearly intervals with a higher median from the 1980s to 2023. please draw a conclusion comparing african cfa franc zone countries and african non cfa franc zone countries.
-            
-            Please format response in markdown like this:
-            ### What is {indicator}? 
-            in this section explain what the indicator means and if it is better for economic development for {indicator} to be higher or lower?
-            ### Conclusion
-            In this section make a simple conclusion comparing CFA African Franc Zone Countries and Non CFA African Franc Zone Countries.
+        In a professional tone like a keynesian economist: 
+        Please format response in markdown with only these sections:
+        
+        ### What is {indicator}? 
+        In this section explain what the {indicator} means.  For more context this {indicator} is measured in unit {unit} and can be described as {description}. Is it better for economic development for {indicator} to be higher or lower? 
+        
+        ### Conclusion
+        Based on the previous response with regards to if it is better for economic developement for {indicator} to be higher or lower, for {indicator} {intervals_where_median_is_higher} had more yearly intervals with a higher median from the 1980s to 2023. Please draw a simple conclusion comparing african cfa franc zone countries and african non cfa franc zone countries.
         """,
     )
 
