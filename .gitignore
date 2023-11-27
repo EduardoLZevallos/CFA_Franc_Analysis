@@ -9,3 +9,5 @@ share/
 src/cfa_analysis.egg-info/
 src/cfa_analysis/.ipynb_checkpoints/
 src/cfa_analysis/__pycache__/
+
+/.quarto/

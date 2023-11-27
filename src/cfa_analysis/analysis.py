@@ -34,40 +34,51 @@ def analyze_medians(merged_df: pl.DataFrame) -> tuple:
         )
         <= 2
     ):
-        intervals_where_median_is_higher = "CFA and Non CFA were equal"
+        intervals_where_median_is_higher = "CFA and Non CFA countries had roughly an equal amount of intervals where their respective medians was higher"
     elif (
         number_of_times_cfa_median_is_greater
         > number_of_times_non_cfa_median_is_greater
     ):
-        intervals_where_median_is_higher = "Cfa African Franc Zone Countries"
+        intervals_where_median_is_higher = "CFA African Countries"
     else:
-        intervals_where_median_is_higher = "Non Cfa African Franc Zone Countries"
+        intervals_where_median_is_higher = "Non-CFA Middle Africa/West Africa Countries"
     return intervals_where_median_is_higher, merged_df["Year"].to_list()
 
 
 def get_median_df(all_data_df: pl.DataFrame, indicator_label: str) -> pl.DataFrame:
     """ Returns the medians for cfa and noncfa african countries as a 
-    new dataframe, drops nulls and renames columns"""
+    new dataframe, drops nulls and renames columns
+    Handles casees of when countries joined the cfa zone
+    Guinea-Bissau joined cfa zone in 1997
+    Mali joined cfa zone in 1984
+    Equatorial Guinea joined cfa zone in 1985
+    """
     return (
-        all_data_df.group_by(["Year"], maintain_order=True)
-        .agg(
+        all_data_df.group_by(["Year"], maintain_order=True).agg(
             pl.col(indicator_label)
-            .where(pl.col("Country").is_in(CFA_FRANC_ZONE))
+            .where(
+            ((pl.col("Year") >= 1997) & (pl.col("Country") == "Guinea-Bissau"))
+            | ((pl.col("Year") >= 1984) & (pl.col("Country") == "Mali"))
+            | ((pl.col("Year") >= 1985) & (pl.col("Country") == "Equatorial Guinea"))
+            | (pl.col("Country").is_in(CFA_FRANC_ZONE)  & ~pl.col("Country").is_in(["Guinea-Bissau", "Mali", "Equatorial Guinea"]))
+            )
             .median()
-        )
-        .join(
+        ).join(
             all_data_df.group_by(["Year"], maintain_order=True).agg(
                 pl.col(indicator_label)
                 .where(
                     pl.col("Country").is_in(WEST_AFRICA)
                     | pl.col("Country").is_in(MIDDLE_AFRICA)
+                    | ((pl.col("Year") < 1997) & (pl.col("Country") == "Guinea-Bissau"))
+                    | ((pl.col("Year") < 1984) & (pl.col("Country") == "Mali"))
+                    | ((pl.col("Year") < 1985) & (pl.col("Country") == "Equatorial Guinea"))
                 )
                 .median()
             ),
             on="Year",
-        )
-    ).drop_nulls().rename({indicator_label: 'cfa_median', f"{indicator_label}_right": 'noncfa_median'}).with_columns(pl.col("cfa_median").abs().alias('abs_cfa_median'),
-                pl.col("noncfa_median").abs().alias('abs_noncfa_median')
+        ).drop_nulls().rename({indicator_label: 'cfa_median', f"{indicator_label}_right": 'noncfa_median'}).with_columns(pl.col("cfa_median").abs().alias('abs_cfa_median'),
+                        pl.col("noncfa_median").abs().alias('abs_noncfa_median')
+                        )
                 )
 
 
@@ -87,14 +98,13 @@ def process_single_indicator(
         )
     )
     show(p)
-    
-    # intervals_where_median_is_higher, years = analyze_medians(median_df)
-    # display(
-    #     chat_gpt_analyze_results(
-    #         indicator_label,
-    #         years,
-    #         intervals_where_median_is_higher,
-    #         indicator_description,
-    #         indicator_unit,
-    #     )
-    # )
+    intervals_where_median_is_higher, years = analyze_medians(median_df)
+    display(
+        chat_gpt_analyze_results(
+            indicator_label,
+            years,
+            intervals_where_median_is_higher,
+            indicator_description,
+            indicator_unit,
+        )
+    )

@@ -30,9 +30,8 @@ def generate_graph(merged_df_dict: Dict, metric_name: str, unit: str) -> figure:
         ('Inflation Rate, End Of Period Consumer Prices', 'Annual % change'),
         ('Private Inflows Excluding Direct Investment (% Of GDP)', 'Percent'),
         ('Private Outflows Excluding Direct Investment (% Of GDP)', 'Percent'),
-        ('Real Non-oil GDP Growth', 'Annual % change'),
-                         
-                        ]
+        ('Real Non-oil GDP Growth', 'Annual % change'),  
+    ]
     if (metric_name, unit) in no_log_scale_metrics:
         p = figure(
             x_axis_label="Year",
@@ -54,17 +53,17 @@ def generate_graph(merged_df_dict: Dict, metric_name: str, unit: str) -> figure:
             x="Year",
             y="abs_noncfa_median",
             color="#D55E00",
-            line_width=2,
+            line_width=3,
             source=ColumnDataSource(merged_df_dict),
-            line_alpha=0.4,
+            line_alpha=0.3,
         )
         p.line(
             x="Year",
             y="abs_cfa_median",
             color="#0072B2",
-            line_width=2,
+            line_width=3,
             source=ColumnDataSource(merged_df_dict),
-            line_alpha=0.4,
+            line_alpha=0.3,
         )
         
     p.line(
@@ -100,7 +99,7 @@ def generate_graph(merged_df_dict: Dict, metric_name: str, unit: str) -> figure:
 
     p.add_layout(
         Title(
-            text="CFA African Countries vs. Non-CFA African Countries\n\n",
+            text="CFA African Countries vs. Non-CFA Middle Africa/West Africa Countries \n\n",
             text_font_size="12pt",
             text_align="center",
             align="center",
@@ -159,13 +158,13 @@ def chat_gpt_analyze_results(
         "openai-chat:gpt-3.5-turbo -f markdown",
         f"""
         In a professional tone like a keynesian economist: 
-        Please format response in markdown with only these sections:
+        Response formatting: twos sections,  first section the heading 3  "What is {indicator} and the second section heading 3 "Conclusion":
         
         ### What is {indicator}? 
-        In this section explain what the {indicator} means.  For more context this {indicator} is measured in unit {unit} and can be described as {description}. Is it better for economic development for {indicator} to be higher or lower? 
+        In this section explain what the {indicator} means.  For more context this {indicator} is measured in unit {unit} and can be described as {description}. Is it better for economic development for {indicator} to be higher or lower? What does it suggest about economic development for {indicator} to be high or low?
         
         ### Conclusion
-        Based on the previous response with regards to if it is better for economic developement for {indicator} to be higher or lower, for {indicator} {intervals_where_median_is_higher} had more yearly intervals with a higher median from the 1980s to 2023. Please draw a simple conclusion comparing african cfa franc zone countries and african non cfa franc zone countries.
+        Based on the previous response with regards to if it is better for economic developement for {indicator} to be higher or lower, for {indicator} {intervals_where_median_is_higher} had more yearly intervals with a higher median from {years[0]} to {years[-1]}. Please draw a simple conclusion comparing african cfa franc zone countries and african non cfa franc zone countries.
         """,
     )
 

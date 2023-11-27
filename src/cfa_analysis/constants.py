@@ -43,7 +43,7 @@ NORTH_AFRICA = [
 
 EASTERN_AFRICA = [
     "Burundi",  # Eastern
-    "Comoros",  # Eastern
+    "Comoros",  # Eastern # In the CFA zone
     "Djibouti",  # Eastern
     "Eritrea",  # Eastern
     "Ethiopia",  # Eastern

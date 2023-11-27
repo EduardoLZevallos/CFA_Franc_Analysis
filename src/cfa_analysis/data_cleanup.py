@@ -16,7 +16,7 @@ def merge_duplicate_dfs(all_dfs: List[pl.DataFrame], indicator_label: str) -> pl
         merged_df = (
             merged_df
             .with_columns([
-                pl.when(pl.col(f"{indicator_label}_left").is_not_null() & pl.col(f"{indicator_label}_right").is_not_null())
+                (pl.col(f"{indicator_label}_left").is_not_null() & pl.col(f"{indicator_label}_right").is_not_null())
                 .then((pl.col(f"{indicator_label}_left").add(pl.col(f"{indicator_label}_right"))).truediv(2))
                 .when(pl.col(f"{indicator_label}_left").is_not_null())
                 .then(pl.col(f"{indicator_label}_left"))
