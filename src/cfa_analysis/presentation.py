@@ -10,7 +10,7 @@ from bokeh.models import (
     Range1d,
     Title,
     BasicTickFormatter,
-    Range1d
+    Range1d,
 )
 from IPython import get_ipython
 from IPython.display import display, Markdown
@@ -25,12 +25,12 @@ from .data_retrieval import (
 def generate_graph(merged_df_dict: Dict, metric_name: str, unit: str) -> figure:
     curdoc().theme = "light_minimal"
     no_log_scale_metrics = [
-        ('Real GDP Growth Rate', 'Annual % change'),
-        ('Inflation Rate, Average Consumer Prices','Annual % change'), 
-        ('Inflation Rate, End Of Period Consumer Prices', 'Annual % change'),
-        ('Private Inflows Excluding Direct Investment (% Of GDP)', 'Percent'),
-        ('Private Outflows Excluding Direct Investment (% Of GDP)', 'Percent'),
-        ('Real Non-oil GDP Growth', 'Annual % change'),  
+        ("Real GDP Growth Rate", "Annual % change"),
+        ("Inflation Rate, Average Consumer Prices", "Annual % change"),
+        ("Inflation Rate, End Of Period Consumer Prices", "Annual % change"),
+        ("Private Inflows Excluding Direct Investment (% Of GDP)", "Percent"),
+        ("Private Outflows Excluding Direct Investment (% Of GDP)", "Percent"),
+        ("Real Non-oil GDP Growth", "Annual % change"),
     ]
     if (metric_name, unit) in no_log_scale_metrics:
         p = figure(
@@ -47,7 +47,7 @@ def generate_graph(merged_df_dict: Dict, metric_name: str, unit: str) -> figure:
             width=800,
             height=400,
             toolbar_location=None,
-            y_axis_type="log"
+            y_axis_type="log",
         )
         p.line(
             x="Year",
@@ -65,7 +65,7 @@ def generate_graph(merged_df_dict: Dict, metric_name: str, unit: str) -> figure:
             source=ColumnDataSource(merged_df_dict),
             line_alpha=0.3,
         )
-        
+
     p.line(
         x="Year",
         y="noncfa_median",
@@ -132,7 +132,7 @@ def generate_graph(merged_df_dict: Dict, metric_name: str, unit: str) -> figure:
     p.axis.major_label_text_font_size = "12px"
     p.axis.axis_label_standoff = 20
     p.xaxis.major_label_orientation = 1.0
-    p.yaxis[0].formatter = BasicTickFormatter(use_scientific = False)
+    p.yaxis[0].formatter = BasicTickFormatter(use_scientific=False)
     # p.yaxis[0].formatter = PrintfTickFormatter(format="%2f")
 
     p.legend.border_line_color = None
@@ -158,13 +158,13 @@ def chat_gpt_analyze_results(
         "openai-chat:gpt-3.5-turbo -f markdown",
         f"""
         In a professional tone like a keynesian economist: 
-        Response formatting: twos sections,  first section the heading 3  "What is {indicator} and the second section heading 3 "Conclusion":
+        The response has to be formatted into two sections, and only two sections.  Those two sections are, 
         
-        ### What is {indicator}? 
+        The first section: markdown heading 3  "What is {indicator}?"
         In this section explain what the {indicator} means.  For more context this {indicator} is measured in unit {unit} and can be described as {description}. Is it better for economic development for {indicator} to be higher or lower? What does it suggest about economic development for {indicator} to be high or low?
-        
-        ### Conclusion
-        Based on the previous response with regards to if it is better for economic developement for {indicator} to be higher or lower, for {indicator} {intervals_where_median_is_higher} had more yearly intervals with a higher median from {years[0]} to {years[-1]}. Please draw a simple conclusion comparing african cfa franc zone countries and african non cfa franc zone countries.
+         
+        The second section: markdown heading 3 "Conclusion":
+        With regards to if it is better for economic developement for {indicator} to be higher or lower, for {indicator} {intervals_where_median_is_higher} had more yearly intervals with a higher median from {years[0]} to {years[-1]}. Please draw a simple conclusion about economic development comparing african cfa franc zone countries and african non cfa franc zone countries.
         """,
     )
 

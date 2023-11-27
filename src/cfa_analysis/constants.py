@@ -124,7 +124,16 @@ MISSING_COUNTRIES = [
 	west africa 48
 	middle africa 31 
 """
-SKIP_INDICATORS = {'GGXCNL_NGDP', 'GGXWDG_NGDP', 'SITC1_1', 'SITC1_3','SITC1_4', 'SITC1_5', 'SITC1_9', 'G_XWDG_G01_GDP_PT'}
+SKIP_INDICATORS = {
+    "GGXCNL_NGDP",
+    "GGXWDG_NGDP",
+    "SITC1_1",
+    "SITC1_3",
+    "SITC1_4",
+    "SITC1_5",
+    "SITC1_9",
+    "G_XWDG_G01_GDP_PT",
+}
 
 UNIT_FORMATTING = {
     "Billions of U.S. dollars": "Billions of U.S. dollars",

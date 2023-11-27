@@ -1,27 +1,20 @@
 PRIORITY:
-- correct for when CFA countries joined economic union, requires correct analyze functions
+- Select graphs that I want for analysis, and add other graphs to an appendix 
+- pull out logic that checks if we have enough datapoints and work that into this analysis
+- Go through notes from book and see what I want to include 
 - indicator on graph, telling user about negative numbers formatting
+- Fix test and add more test
+- Create Readme make sure assumptions are included in there.
 - fix issue where some chatgpt formatting doesn't respect the two sections
 - see if we can flip the chart for negative numbers
 - try chat gpt model
-
-- make graph bigger?  
-- how did I determine the african regions? 
 - real long term government bond yield the chatgpt explanation is broken thinks both
 - Direct Investment Abroad - chatgpt reading it as none
 - to add zeros to the graph can use patch https://github.com/bokeh/bokeh/issues/6536 
 
-
-SECONDARY:
+SECOND PRIORITY:
 - consider percentiles, could do a box plot
-- pre 2000 how much data do we actually have? 
-
-ELSE: 
 - graph the confidence intervals - MAKES NO SENSE - but break that out into another notebook and save it
-- break out the cfa into the two economic unions?
-- make question of the analysis more explicit
-- save the results in structure, in case I want to make changes. 
 - set up drone
-- consider making the graph wider 
 - review prompt from gpt4 about analyzing results - might want to graph confidence intervals https://stackoverflow.com/questions/71916767/how-to-plot-confidence-interval-of-a-time-series-data-in-python 
 - https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjSz5mNp5qCAxW8FFkFHRYyC9AQFnoECBgQAQ&url=https%3A%2F%2Fwww.elibrary.imf.org%2Fdownloadpdf%2Fbook%2F9781589066755%2Fch005.pdf&usg=AOvVaw2_0dmxOSG60i6sJfHjELfI&opi=89978449 check out for ideas
