@@ -137,7 +137,7 @@ def generate_graph(merged_df_dict: Dict, metric_name: str, unit: str) -> figure:
 
     p.legend.border_line_color = None
     p.legend.border_line_alpha = 0
-    p.legend.click_policy = "hide"
+    # p.legend.click_policy = "hide" dont want legend to be clickable 
 
     p.min_border = 100
     return p

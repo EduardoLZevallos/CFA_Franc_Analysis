@@ -57,7 +57,7 @@ def get_all_metric_data(country_list: list, metric_abbr: str, countries: dict) -
             raise Exception(
                 "Response returned country data for less than 80% of provided countries"
             )
-        return get_data_from_imf(url)["values"][metric_abbr]
+        return response
     except Exception as e:
         logging.debug(
             f"issue with indicator abbrv: {metric_abbr}, for zone {country_list} exception: {e} no data returned"

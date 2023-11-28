@@ -1,15 +1,13 @@
 PRIORITY:
+- Fix test and add more test
 - Select graphs that I want for analysis, and add other graphs to an appendix 
 - pull out logic that checks if we have enough datapoints and work that into this analysis
+- find a better way to store keys
 - Go through notes from book and see what I want to include 
+- Read prompt engineering doc from open ai https://platform.openai.com/docs/guides/prompt-engineering  
 - indicator on graph, telling user about negative numbers formatting
-- Fix test and add more test
 - Create Readme make sure assumptions are included in there.
 - fix issue where some chatgpt formatting doesn't respect the two sections
-- see if we can flip the chart for negative numbers
-- try chat gpt model
-- real long term government bond yield the chatgpt explanation is broken thinks both
-- Direct Investment Abroad - chatgpt reading it as none
 - to add zeros to the graph can use patch https://github.com/bokeh/bokeh/issues/6536 
 
 SECOND PRIORITY:
