@@ -8,17 +8,13 @@ setup(
     package_data={
         '': ['*.py']
     },
-    # entry_points={
-    #     'console_scripts': [
-    #         'cfa_analysis = cfa_analysis.main:main'
-    #     ]
-    # },
     install_requires=[
-        'pandas',
-        'requests',
-        'bokeh',
-        'statistics',
-        'numpy',
-        'jupyter_ai',
+        "bokeh",
+        "jupyter_ai",
+        "numpy",
+        "pandas",
+        "polars",
+        "requests",
+        "statistics"
     ],
 )

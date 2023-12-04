@@ -157,14 +157,13 @@ def chat_gpt_analyze_results(
         "ai",
         "openai-chat:gpt-3.5-turbo -f markdown",
         f"""
-        In a professional tone like a keynesian economist: 
-        The response has to be formatted into two sections, and only two sections.  Those two sections are, 
-        
-        The first section: markdown heading 3  "What is {indicator}?"
-        In this section explain what the {indicator} means.  For more context this {indicator} is measured in unit {unit} and can be described as {description}. Is it better for economic development for {indicator} to be higher or lower? What does it suggest about economic development for {indicator} to be high or low?
-         
-        The second section: markdown heading 3 "Conclusion":
-        With regards to if it is better for economic developement for {indicator} to be higher or lower, for {indicator} {intervals_where_median_is_higher} had more yearly intervals with a higher median from {years[0]} to {years[-1]}. Please draw a simple conclusion about economic development comparing african cfa franc zone countries and african non cfa franc zone countries.
+        In a professional tone resembling that of a Keynesian economist, provide a structured response with two sections:
+
+        The first section in markdown heading 3 "What is {indicator}?
+        Explain the concept of {indicator}  measured in {unit} and its significance as an indicator of a country's economic activity. Reference the definition: {description}. What is the significance of the {indicator} and how does it impact a country's economic health? Please elaborate on the implications of higher and lower {indicator}. 
+
+        The second section in markdown heading 3 "Conclusion"
+        With regards to if it is better for economic developement for {indicator} to be higher or lower, for {indicator} {intervals_where_median_is_higher} had more yearly intervals with a higher median from {years[0]} to {years[-1]}. Please draw a concise conclusion about economic development comparing African CFA Zone Countries to Non-CFA Middle Africa and Western Africa Countries. Do not suggest the need for further comprehensive analysis. 
         """,
     )
 

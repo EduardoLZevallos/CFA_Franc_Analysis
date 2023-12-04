@@ -8,39 +8,22 @@ import polars.selectors as cs
 from .constants import CFA_FRANC_ZONE, WEST_AFRICA, MIDDLE_AFRICA
 from .data_cleanup import rename_from_abbr_to_full_name
 
+class InsufficientDataError(Exception):
+    pass
 
-def get_all_duplicate_dfs(
-    duplicate_combinations: Dict[Tuple[str, str], List[str]],
-    indicator_label: str,
-    unit: str,
-    skip_indicators: Set,
-    countries: Dict[str, str],
-    all_countries: Dict[str, str],
-):
-    """Returns a list of dataframes of all indicators that are duplicates"""
-    all_dfs = []
-    for indicator_abbrv in duplicate_combinations[(indicator_label, unit)]:
-        all_dfs.append(
-            get_imf_data_df(
-                get_cfa_and_noncfa_data(indicator_abbrv, countries, all_countries),
-                indicator_label,
-            )
-        )
-        skip_indicators.add(indicator_abbrv)
-    return all_dfs
-
-
-def get_data_from_imf(url: str) -> Optional[dict]:
+def get_data_from_imf(url: str) -> Optional[dict]: #TODO: fix this function check returns, should have try and except
     """Queries imf api for data"""
-    response = requests.get(url)
-    # Check if the request was successful
-    if response.status_code == 200:
-        # Parse the JSON data
-        data = response.json()
-        # Do something with the data
-        return data
-    else:
-        print("Error: Could not retrieve data from the API endpoint")
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            return data   
+    except requests.RequestException as e:
+        logging.debug(f"Error: An exception occurred during the request to the API. {e}")
+        return None
+    except Exception as e:
+        print(f"Error: An unexpected exception occurred. {e}")
+        return None
 
 
 def get_all_metric_data(country_list: list, metric_abbr: str, countries: dict) -> dict:
@@ -51,17 +34,20 @@ def get_all_metric_data(country_list: list, metric_abbr: str, countries: dict) -
         for country in abbr:
             url += f"/{country}"
         response = get_data_from_imf(url)["values"][metric_abbr]
-        if len(response) < math.ceil(
-            len(country_list) * 0.8
-        ):  # not enough data returned
-            raise Exception(
+        if len(response) < math.ceil(len(country_list) * 0.8):
+            raise InsufficientDataError(
                 "Response returned country data for less than 80% of provided countries"
             )
         return response
+    
+    except InsufficientDataError as e:
+        raise  # Re-raise the exception
+        
     except Exception as e:
         logging.debug(
             f"issue with indicator abbrv: {metric_abbr}, for zone {country_list} exception: {e} no data returned"
         )
+    return None
 
 
 def get_cfa_and_noncfa_data(
@@ -159,3 +145,23 @@ def get_imf_data_df(imf_data: dict, indicator: str) -> pl.DataFrame:
         .cast({indicator: pl.Float32})
         .with_columns(pl.col("Year").str.strptime(pl.Date, "%Y").dt.year())
     )
+
+def get_all_duplicate_dfs(
+    duplicate_combinations: Dict[Tuple[str, str], List[str]],
+    indicator_label: str,
+    unit: str,
+    skip_indicators: Set,
+    countries: Dict[str, str],
+    all_countries: Dict[str, str],
+):
+    """Returns a list of dataframes of all indicators that are duplicates"""
+    all_dfs = []
+    for indicator_abbrv in duplicate_combinations[(indicator_label, unit)]:
+        all_dfs.append(
+            get_imf_data_df(
+                get_cfa_and_noncfa_data(indicator_abbrv, countries, all_countries),
+                indicator_label,
+            )
+        )
+        skip_indicators.add(indicator_abbrv)
+    return all_dfs

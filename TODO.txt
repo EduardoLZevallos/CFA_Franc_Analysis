@@ -1,14 +1,17 @@
 PRIORITY:
 - Fix test and add more test
-- Select graphs that I want for analysis, and add other graphs to an appendix 
+- Go through notes from book and see what I want to include 
+- indicator on graph, telling user about negative numbers formatting
+- Consider removing the conclusion from the prompt I dont think its that helpful
+- Then add notes in the conclusion about the charts in the analysis 
+- Create Readme make sure assumptions are included in there.
+
 - pull out logic that checks if we have enough datapoints and work that into this analysis
 - find a better way to store keys
-- Go through notes from book and see what I want to include 
 - Read prompt engineering doc from open ai https://platform.openai.com/docs/guides/prompt-engineering  
-- indicator on graph, telling user about negative numbers formatting
-- Create Readme make sure assumptions are included in there.
 - fix issue where some chatgpt formatting doesn't respect the two sections
-- to add zeros to the graph can use patch https://github.com/bokeh/bokeh/issues/6536 
+- to add zeros to the graph can use patch https://github.com/bokeh/bokeh/issues/6536
+- move generate_metric_graphs() to a module
 
 SECOND PRIORITY:
 - consider percentiles, could do a box plot

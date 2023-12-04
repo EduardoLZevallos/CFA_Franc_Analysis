@@ -39,9 +39,9 @@ def analyze_medians(merged_df: pl.DataFrame) -> tuple:
         number_of_times_cfa_median_is_greater
         > number_of_times_non_cfa_median_is_greater
     ):
-        intervals_where_median_is_higher = "CFA African Countries"
+        intervals_where_median_is_higher = "African CFA Countries"
     else:
-        intervals_where_median_is_higher = "Non-CFA Middle Africa/West Africa Countries"
+        intervals_where_median_is_higher = "Non-CFA Middle Africa and Western Africa Countries"
     return intervals_where_median_is_higher, merged_df["Year"].to_list()
 
 
@@ -115,7 +115,7 @@ def process_single_indicator(
     )
     display(
         Markdown(
-            f"""## {indicator_label} comparison between CFA African Franc Zone Countries and Non CFA African Franc Zone Countries"""
+            f"""## {indicator_label} comparison between African CFA Zone Countries to Non-CFA Middle Africa and Western Africa Countries"""
         )
     )
     show(p)

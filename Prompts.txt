@@ -1,0 +1,9 @@
+This prompt worked well
+        In a professional tone like a keynesian economist: 
+        The response has to be formatted into two sections, and only two sections.  Those two sections are, 
+        
+        The first section: markdown heading 3  "What is {indicator}?"
+        In this section explain what the {indicator} means.  For more context this {indicator} is measured in unit {unit} and can be described as {description}. Is it better for economic development for {indicator} to be higher or lower? What does it suggest about economic development for {indicator} to be high or low?
+         
+        The second section: markdown heading 3 "Conclusion":
+        With regards to if it is better for economic developement for {indicator} to be higher or lower, for {indicator} {intervals_where_median_is_higher} had more yearly intervals with a higher median from {years[0]} to {years[-1]}. Please draw a simple conclusion about economic development comparing african cfa franc zone countries and african non cfa franc zone countries.
