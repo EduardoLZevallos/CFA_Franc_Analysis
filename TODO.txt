@@ -1,10 +1,11 @@
 PRIORITY:
 - Fix test and add more test
-- Go through notes from book and see what I want to include 
 - indicator on graph, telling user about negative numbers formatting
+- add citations 
 - Consider removing the conclusion from the prompt I dont think its that helpful
 - Then add notes in the conclusion about the charts in the analysis 
 - Create Readme make sure assumptions are included in there.
+
 
 - pull out logic that checks if we have enough datapoints and work that into this analysis
 - find a better way to store keys
