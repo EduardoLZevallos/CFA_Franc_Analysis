@@ -1,7 +1,8 @@
 PRIORITY:
 - Fix test and add more test
 - indicator on graph, telling user about negative numbers formatting
-- add citations 
+
+
 - Consider removing the conclusion from the prompt I dont think its that helpful
 - Then add notes in the conclusion about the charts in the analysis 
 - Create Readme make sure assumptions are included in there.

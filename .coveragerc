@@ -1,0 +1,6 @@
+[run]
+omit = 
+	src/cfa_analysis/__init__.py
+	src/cfa_analysis/constants.py
+	src/cfa_analysis/data_classes.py
+
