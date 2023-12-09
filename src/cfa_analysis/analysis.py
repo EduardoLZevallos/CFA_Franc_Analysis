@@ -41,7 +41,9 @@ def analyze_medians(merged_df: pl.DataFrame) -> tuple:
     ):
         intervals_where_median_is_higher = "African CFA Countries"
     else:
-        intervals_where_median_is_higher = "Non-CFA Middle Africa and Western Africa Countries"
+        intervals_where_median_is_higher = (
+            "Non-CFA Middle Africa and Western Africa Countries"
+        )
     return intervals_where_median_is_higher, merged_df["Year"].to_list()
 
 

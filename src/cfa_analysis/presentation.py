@@ -15,11 +15,6 @@ from bokeh.models import (
 from IPython import get_ipython
 from IPython.display import display, Markdown
 from typing import Optional, List, Dict
-from .data_retrieval import (
-    get_data_from_imf,
-    rename_from_abbr_to_full_name,
-    get_all_metric_data,
-)
 
 
 def generate_graph(merged_df_dict: Dict, metric_name: str, unit: str) -> figure:
@@ -137,7 +132,7 @@ def generate_graph(merged_df_dict: Dict, metric_name: str, unit: str) -> figure:
 
     p.legend.border_line_color = None
     p.legend.border_line_alpha = 0
-    # p.legend.click_policy = "hide" dont want legend to be clickable 
+    # p.legend.click_policy = "hide" dont want legend to be clickable
 
     p.min_border = 100
     return p

@@ -1,8 +1,13 @@
 import datetime
 import pandas as pd
 import numpy as np
-from  cfa_analysis.data_cleanup import find_outliers_IQR, rename_from_abbr_to_full_name
+from  cfa_analysis.data_cleanup import (
+    rename_from_abbr_to_full_name,
+    clean_up_indicators_dict,
+    find_duplicate_indicators
+)
 
+from cfa_analysis.constants import UNIT_FORMATTING, LABEL_FORMATTING
 
 def test_rename_from_abbr_to_full_name():
     # GIVEN
@@ -29,31 +34,138 @@ def test_rename_from_abbr_to_full_name():
         "Australia": 1.8
     }
     
-def test_find_outliers_IQR_no_outliers_found():
+def test_clean_up_indicators_dict_no_label_or_unit_appears():
     # GIVEN
-    data = {'A': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            'B': [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]}
-    df = pd.DataFrame(data)
-    
+    original_indicators = {
+        'NGDP_RPCH': {'label': 'No Change',
+      'description': "Gross domestic product is the most commonly used single measure of a country's overall economic activity. It represents the total value at constant prices of final goods and services produced within a country during a specified time period, such as one year.",
+      'source': 'World Economic Outlook (October 2023)',
+      'unit': 'No Change',
+      'dataset': 'WEO'},
+     'NGDPD': {'label': 'No Change',
+      'description': "Gross domestic product is the most commonly used single measure of a country's overall economic activity. It represents the total value at current prices of final goods and services produced within a country during a specified time period, such as one year.",
+      'source': 'World Economic Outlook (October 2023)',
+      'unit': 'No Change',
+      'dataset': 'WEO'}
+    }
     # WHEN
-    outliers = find_outliers_IQR(df)
+    formatted_indicators = clean_up_indicators_dict(original_indicators)
+        
+    # THEN
+    assert formatted_indicators == original_indicators
+    
+def test_clean_up_indicators_dict_unit_formatted():
+    # GIVEN
+    original_indicators = {
+        'NGDP_RPCH': {'label': 'No Change',
+      'description': "Gross domestic product is the most commonly used single measure of a country's overall economic activity. It represents the total value at constant prices of final goods and services produced within a country during a specified time period, such as one year.",
+      'source': 'World Economic Outlook (October 2023)',
+      'unit': 'Annual percent change',
+      'dataset': 'WEO'},
+     'NGDPD': {'label': 'No Change',
+      'description': "Gross domestic product is the most commonly used single measure of a country's overall economic activity. It represents the total value at current prices of final goods and services produced within a country during a specified time period, such as one year.",
+      'source': 'World Economic Outlook (October 2023)',
+      'unit': 'No Change',
+      'dataset': 'WEO'}
+    }
+    # WHEN
+    formatted_indicators = clean_up_indicators_dict(original_indicators)
+        
+    # THEN
+    assert formatted_indicators == {
+        'NGDP_RPCH': {'label': 'No Change',
+      'description': "Gross domestic product is the most commonly used single measure of a country's overall economic activity. It represents the total value at constant prices of final goods and services produced within a country during a specified time period, such as one year.",
+      'source': 'World Economic Outlook (October 2023)',
+      'unit': '% change',
+      'dataset': 'WEO'},
+     'NGDPD': {'label': 'No Change',
+      'description': "Gross domestic product is the most commonly used single measure of a country's overall economic activity. It represents the total value at current prices of final goods and services produced within a country during a specified time period, such as one year.",
+      'source': 'World Economic Outlook (October 2023)',
+      'unit': 'No Change',
+      'dataset': 'WEO'}
+    }
 
-    # THEN
-    expected_result = pd.DataFrame({'A': [float('nan')] * 10, 'B': [float('nan')] * 10})
-    pd.testing.assert_frame_equal(outliers,expected_result)
-    
-def test_find_outliers_IQR_outliers_found():
+def test_clean_up_indicators_dict_label_formatted():
     # GIVEN
-    data = {'A': [1, 2, 3, 4, 5, 6, 7, 8, 9, 100],  # Outlier: 100
-            'B': [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]}
-    df = pd.DataFrame(data)
-    
+    original_indicators = {
+        'NGDP_RPCH': {'label': 'Real GDP growth',
+      'description': "Gross domestic product is the most commonly used single measure of a country's overall economic activity. It represents the total value at constant prices of final goods and services produced within a country during a specified time period, such as one year.",
+      'source': 'World Economic Outlook (October 2023)',
+      'unit': 'No Change',
+      'dataset': 'WEO'},
+     'NGDPD': {'label': 'No Change',
+      'description': "Gross domestic product is the most commonly used single measure of a country's overall economic activity. It represents the total value at current prices of final goods and services produced within a country during a specified time period, such as one year.",
+      'source': 'World Economic Outlook (October 2023)',
+      'unit': 'No Change',
+      'dataset': 'WEO'}
+    }
     # WHEN
-    outliers = find_outliers_IQR(df)
+    formatted_indicators = clean_up_indicators_dict(original_indicators)
+        
+    # THEN
+    assert formatted_indicators == {
+        'NGDP_RPCH': {'label': 'Real GDP Growth Rate',
+      'description': "Gross domestic product is the most commonly used single measure of a country's overall economic activity. It represents the total value at constant prices of final goods and services produced within a country during a specified time period, such as one year.",
+      'source': 'World Economic Outlook (October 2023)',
+      'unit': 'No Change',
+      'dataset': 'WEO'},
+     'NGDPD': {'label': 'No Change',
+      'description': "Gross domestic product is the most commonly used single measure of a country's overall economic activity. It represents the total value at current prices of final goods and services produced within a country during a specified time period, such as one year.",
+      'source': 'World Economic Outlook (October 2023)',
+      'unit': 'No Change',
+      'dataset': 'WEO'}
+    }
+    
+    
+def test_find_duplicate_indicators_two_sets_of_duplicates_found():
+    # GIVEN
+    indicators =  {
+       'NGDP_RPCH': {
+           'label': 'Real GDP Growth Rate',
+           'unit': '% change'
+       },
+        'NGDP_R_PCH': {
+           'label': 'Real GDP Growth Rate',
+           'unit': '% change'
+       },
+        'rev': {
+           'label': 'Government Revenue',
+           'unit': '% of GDP'
+       },
+        'GGR_G01_GDP_PT': {
+           'label': 'Government Revenue',
+           'unit': '% of GDP'
+       }
+    }
+    # WHEN
+    result = find_duplicate_indicators(indicators)
     
     # THEN
-    expected_result = pd.DataFrame({'A': [np.nan] * 9 + [100.0], 'B': [np.nan] * 10})
-    pd.testing.assert_frame_equal(outliers, expected_result)
+    result == {('Real GDP Growth Rate', '% change'): ['NGDP_RPCH', 'NGDP_R_PCH'],
+ ('Government Revenue', '% of GDP'): ['rev', 'GGR_G01_GDP_PT']}
     
+def test_find_duplicate_indicators_no_duplicates_found():
+    # GIVEN
+    indicators =  {
+       'NGDP_RPCH': {
+           'label': 'A',
+           'unit': '1'
+       },
+        'NGDP_R_PCH': {
+           'label': 'B',
+           'unit': '2'
+       },
+        'rev': {
+           'label': 'C',
+           'unit': '3'
+       },
+        'GGR_G01_GDP_PT': {
+           'label': 'D',
+           'unit': '4'
+       }
+    }
+    # WHEN
+    result = find_duplicate_indicators(indicators)
     
-    pd.testing.assert_frame_equal(cleaned_df, expected_result)
+    # THEN
+    result == {}

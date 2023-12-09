@@ -4,3 +4,5 @@ omit =
 	src/cfa_analysis/constants.py
 	src/cfa_analysis/data_classes.py
 
+[report]
+show_missing = true

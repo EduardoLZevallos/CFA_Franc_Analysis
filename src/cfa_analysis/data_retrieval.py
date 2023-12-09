@@ -8,22 +8,9 @@ import polars.selectors as cs
 from .constants import CFA_FRANC_ZONE, WEST_AFRICA, MIDDLE_AFRICA
 from .data_cleanup import rename_from_abbr_to_full_name
 
+
 class InsufficientDataError(Exception):
     pass
-
-def get_data_from_imf(url: str) -> Optional[dict]: #TODO: fix this function check returns, should have try and except
-    """Queries imf api for data"""
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json()
-            return data   
-    except requests.RequestException as e:
-        logging.debug(f"Error: An exception occurred during the request to the API. {e}")
-        return None
-    except Exception as e:
-        print(f"Error: An unexpected exception occurred. {e}")
-        return None
 
 
 def get_all_metric_data(country_list: list, metric_abbr: str, countries: dict) -> dict:
@@ -33,31 +20,26 @@ def get_all_metric_data(country_list: list, metric_abbr: str, countries: dict) -
         url = f"https://www.imf.org/external/datamapper/api/v1/{metric_abbr}"
         for country in abbr:
             url += f"/{country}"
-        response = get_data_from_imf(url)["values"][metric_abbr]
+        response = requests.get(url).json()["values"][metric_abbr]
         if len(response) < math.ceil(len(country_list) * 0.8):
             raise InsufficientDataError(
                 "Response returned country data for less than 80% of provided countries"
             )
         return response
-    
     except InsufficientDataError as e:
         raise  # Re-raise the exception
-        
-    except Exception as e:
-        logging.debug(
-            f"issue with indicator abbrv: {metric_abbr}, for zone {country_list} exception: {e} no data returned"
-        )
+
     return None
 
 
 def get_cfa_and_noncfa_data(
     indicator_abbrv: str, countries: dict, all_countries: dict
 ) -> dict:
-    chunk_1_data_non_cfa = rename_from_abbr_to_full_name(
+    middle_africa_data = rename_from_abbr_to_full_name(
         get_all_metric_data(MIDDLE_AFRICA, indicator_abbrv, countries),
         all_countries,
     )  # believe theres a limit to api payload
-    chunk_2_data_non_cfa = rename_from_abbr_to_full_name(
+    west_africa_data = rename_from_abbr_to_full_name(
         get_all_metric_data(WEST_AFRICA, indicator_abbrv, countries),
         all_countries,
     )
@@ -65,23 +47,22 @@ def get_cfa_and_noncfa_data(
         get_all_metric_data(CFA_FRANC_ZONE, indicator_abbrv, countries),
         all_countries,
     )
-    cfa_data.update(chunk_1_data_non_cfa)
-    cfa_data.update(chunk_2_data_non_cfa)
+    cfa_data.update(middle_africa_data)
+    cfa_data.update(west_africa_data)
     return cfa_data
 
 
 def get_country_mapping() -> Dict[str, str]:
-    all_countries = get_data_from_imf(
+    all_countries = requests.get(
         "https://www.imf.org/external/datamapper/api/v1/countries"
-    )
+    ).json()
     return all_countries, {v["label"]: k for k, v in all_countries["countries"].items()}
 
 
 def get_indicators_data() -> Dict[str, Dict[str, Any]]:
-    indicators_imf_dict = get_data_from_imf(
+    return requests.get(
         "https://www.imf.org/external/datamapper/api/v1/indicators"
-    )
-    return indicators_imf_dict["indicators"]
+    ).json()["indicators"]
 
 
 def get_imf_data_df(imf_data: dict, indicator: str) -> pl.DataFrame:
@@ -145,6 +126,7 @@ def get_imf_data_df(imf_data: dict, indicator: str) -> pl.DataFrame:
         .cast({indicator: pl.Float32})
         .with_columns(pl.col("Year").str.strptime(pl.Date, "%Y").dt.year())
     )
+
 
 def get_all_duplicate_dfs(
     duplicate_combinations: Dict[Tuple[str, str], List[str]],
