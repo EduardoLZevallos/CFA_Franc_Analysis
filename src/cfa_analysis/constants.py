@@ -1,3 +1,4 @@
+""" Has CFA franc zone, West Africa, Middle Africa lists,  also list of indicators to skip, and unit and label formatting dicts  """
 CFA_FRANC_ZONE = [
     "Benin",  # west
     "Burkina Faso",  # west
@@ -82,6 +83,17 @@ MISSING_COUNTRIES = [
     "Somaliland (Somalia)"  # Eastern
 ]
 
+SKIP_INDICATORS = {
+    "GGXCNL_NGDP",
+    "GGXWDG_NGDP",
+    "SITC1_1",
+    "SITC1_3",
+    "SITC1_4",
+    "SITC1_5",
+    "SITC1_9",
+    "G_XWDG_G01_GDP_PT",
+}
+
 """
 # SKIP_INDICATORS because missing data as of 11/12/23
 - General Government Net Lending/borrowing
@@ -124,19 +136,7 @@ MISSING_COUNTRIES = [
 	west africa 48
 	middle africa 31 
 """
-SKIP_INDICATORS = {
-    "GGXCNL_NGDP",
-    "GGXWDG_NGDP",
-    "SITC1_1",
-    "SITC1_3",
-    "SITC1_4",
-    "SITC1_5",
-    "SITC1_9",
-    "G_XWDG_G01_GDP_PT",
-}
-
 UNIT_FORMATTING = {
-    "Billions of U.S. dollars": "Billions of U.S. dollars",
     "U.S. dollars per capita": "U.S. dollars per capita",
     "Purchasing power parity; billions of international dollars": "Purchasing power parity; \n billions of international dollars",
     "Purchasing power parity; international dollars per capita": "Purchasing power parity; \n international dollars per capita",
@@ -149,9 +149,7 @@ UNIT_FORMATTING = {
     "Percent of GDP": "% of GDP",
     "Percent": "%",
     "% of GDP": "% of GDP",
-    "Index": "Index",
     "Millions of US Dollars": "Millions of US Dollars",
-    "Percent": "Percent",
     "Units": "Units",
     "Unit": "Units",
     "Index": "Index",

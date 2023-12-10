@@ -1,7 +1,7 @@
-import requests
-from typing import Optional, Dict, Any, List, Tuple, Set
+""" Retrieves data from imf, country list, indicator list, and metrics for indicator per country """
 import math
-import logging
+import requests
+from typing import Any
 
 import polars as pl
 import polars.selectors as cs
@@ -10,7 +10,7 @@ from .data_cleanup import rename_from_abbr_to_full_name
 
 
 class InsufficientDataError(Exception):
-    pass
+    """Exception raised if query returns datas for fewer than 80% of requested countries"""
 
 
 def get_all_metric_data(country_list: list, metric_abbr: str, countries: dict) -> dict:
@@ -26,7 +26,7 @@ def get_all_metric_data(country_list: list, metric_abbr: str, countries: dict) -
                 "Response returned country data for less than 80% of provided countries"
             )
         return response
-    except InsufficientDataError as e:
+    except InsufficientDataError:
         raise  # Re-raise the exception
 
     return None
@@ -35,6 +35,8 @@ def get_all_metric_data(country_list: list, metric_abbr: str, countries: dict) -
 def get_cfa_and_noncfa_data(
     indicator_abbrv: str, countries: dict, all_countries: dict
 ) -> dict:
+    """Returns a dict of all data for middle africa,
+    west africa, and cfa franc zone for a given indicator"""
     middle_africa_data = rename_from_abbr_to_full_name(
         get_all_metric_data(MIDDLE_AFRICA, indicator_abbrv, countries),
         all_countries,
@@ -52,20 +54,24 @@ def get_cfa_and_noncfa_data(
     return cfa_data
 
 
-def get_country_mapping() -> Dict[str, str]:
+def get_country_mapping() -> dict[str, str]:
+    """Returns all countires from imf in two dicts,
+    one where country name is the key, one where abbreviation is the key"""
     all_countries = requests.get(
         "https://www.imf.org/external/datamapper/api/v1/countries"
     ).json()
     return all_countries, {v["label"]: k for k, v in all_countries["countries"].items()}
 
 
-def get_indicators_data() -> Dict[str, Dict[str, Any]]:
+def get_indicators_data() -> dict[str, dict[str, Any]]:
+    """Returns all economic indicators you can query for from imf"""
     return requests.get(
         "https://www.imf.org/external/datamapper/api/v1/indicators"
     ).json()["indicators"]
 
 
 def get_imf_data_df(imf_data: dict, indicator: str) -> pl.DataFrame:
+    """returns dataframe of imf data for a given metric for all african zones"""
     return (
         pl.from_dicts(
             data=[{"Country": country, **imf_data[country]} for country in imf_data],
@@ -129,13 +135,13 @@ def get_imf_data_df(imf_data: dict, indicator: str) -> pl.DataFrame:
 
 
 def get_all_duplicate_dfs(
-    duplicate_combinations: Dict[Tuple[str, str], List[str]],
+    duplicate_combinations: dict[tuple[str, str], list[str]],
     indicator_label: str,
     unit: str,
-    skip_indicators: Set,
-    countries: Dict[str, str],
-    all_countries: Dict[str, str],
-):
+    skip_indicators: set,
+    countries: dict[str, str],
+    all_countries: dict[str, str],
+) -> list[pl.DataFrame]:
     """Returns a list of dataframes of all indicators that are duplicates"""
     all_dfs = []
     for indicator_abbrv in duplicate_combinations[(indicator_label, unit)]:

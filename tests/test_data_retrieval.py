@@ -2,7 +2,6 @@ from unittest.mock import patch, call
 
 from polars.testing import assert_frame_equal
 import polars as pl
-import pandas as pd
 import pytest
 from cfa_analysis.data_retrieval import (
     get_all_metric_data,

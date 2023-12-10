@@ -10,11 +10,10 @@ setup(
     },
     install_requires=[
         "bokeh",
+        "IPython",
         "jupyter_ai",
         "numpy",
-        "pandas",
         "polars",
         "requests",
-        "statistics"
     ],
 )
