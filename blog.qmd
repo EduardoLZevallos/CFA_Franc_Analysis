@@ -1,8 +1,0 @@
----
-title: "Blog"
-listing:
-    contents: notebooks
-    type: grid
-    fields: [image, title, description]
-toc: true
----

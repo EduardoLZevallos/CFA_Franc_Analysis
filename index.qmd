@@ -1,4 +1,0 @@
----
-title: "Home"
----
-Welcome top my home page
