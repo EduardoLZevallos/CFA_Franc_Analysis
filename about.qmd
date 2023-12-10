@@ -1,9 +1,0 @@
----
-title: "About"
-about:
-    template: jolla
-toc: false
----
-
-## Education
-Yaaaa

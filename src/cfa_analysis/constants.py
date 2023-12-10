@@ -1,3 +1,4 @@
+""" Has CFA franc zone, West Africa, Middle Africa lists,  also list of indicators to skip, and unit and label formatting dicts  """
 CFA_FRANC_ZONE = [
     "Benin",  # west
     "Burkina Faso",  # west
@@ -82,52 +83,18 @@ MISSING_COUNTRIES = [
     "Somaliland (Somalia)"  # Eastern
 ]
 
-"""
-# SKIP_INDICATORS because missing data as of 11/12/23
-- General Government Net Lending/borrowing
-	cfa - 162
-	west africa - 118
-	middle africa - 52 
- 
-- General Government Gross Debt 
-	cfa 223
-	west africa 128
-	middle africa 61
- 
-- Beverages, Tobacco 
-	cfa 153
-	west africa 134
-	middle africa 49
- 
-- Mineral Fuels, Lubricants And Related Materials 
-	cfa 183
-	west africa 104
-	middle africa 36
-
-- Animal, Vegetable Oils, Fats
-	cfa 168
-	west africa 89
-	middle africa 52
-
-- Chemicals comparison
-	cfa 94
-	west africa 54
-	middle africa 21
-
-- Commodity & Transactions Not Classified Accord To Kind
-	cfa 174
-	west africa 122
-	middle africa 59
-
-- Gross Debt Position
-	cfa 94
-	west africa 48
-	middle africa 31 
-"""
-SKIP_INDICATORS = {'GGXCNL_NGDP', 'GGXWDG_NGDP', 'SITC1_1', 'SITC1_3','SITC1_4', 'SITC1_5', 'SITC1_9', 'G_XWDG_G01_GDP_PT'}
+SKIP_INDICATORS = {
+    "GGXCNL_NGDP",
+    "GGXWDG_NGDP",
+    "SITC1_1",
+    "SITC1_3",
+    "SITC1_4",
+    "SITC1_5",
+    "SITC1_9",
+    "G_XWDG_G01_GDP_PT",
+}
 
 UNIT_FORMATTING = {
-    "Billions of U.S. dollars": "Billions of U.S. dollars",
     "U.S. dollars per capita": "U.S. dollars per capita",
     "Purchasing power parity; billions of international dollars": "Purchasing power parity; \n billions of international dollars",
     "Purchasing power parity; international dollars per capita": "Purchasing power parity; \n international dollars per capita",
@@ -140,9 +107,7 @@ UNIT_FORMATTING = {
     "Percent of GDP": "% of GDP",
     "Percent": "%",
     "% of GDP": "% of GDP",
-    "Index": "Index",
     "Millions of US Dollars": "Millions of US Dollars",
-    "Percent": "Percent",
     "Units": "Units",
     "Unit": "Units",
     "Index": "Index",

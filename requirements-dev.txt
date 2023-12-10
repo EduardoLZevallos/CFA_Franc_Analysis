@@ -1,4 +1,6 @@
 black
+black[jupyter]
 pylint
 pytest
 mypy
+pytest-cov

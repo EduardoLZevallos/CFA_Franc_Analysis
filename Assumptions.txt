@@ -1,6 +1,0 @@
-- will not remove outliers for cfa franc zone because each period only has 14 data points 
-- some contention with what chatgpt considers positive negative indicators
-- skipping analysis if data isn't recent 
-- changed analysis to be only middle and western africa
-- no log scale value for zero
-- Comoros is in the cfa zone, but from eastern africa zone so not in this analysis

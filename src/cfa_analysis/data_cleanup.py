@@ -1,76 +1,96 @@
-from typing import Dict, Tuple, List
-import pandas as pd
+"""Clean up data functions, find and merge duplicates, format names of units and labels"""
 import polars as pl
-import numpy as np
-import datetime
 from .constants import UNIT_FORMATTING, LABEL_FORMATTING
 
 
-def merge_duplicate_dfs(all_dfs: List[pl.DataFrame], indicator_label: str) -> pl.DataFrame:
-    """ Merges all the duplicate dictionaries """
-    merged_df = all_dfs[0]
-    for x,df in enumerate(all_dfs):
-        if x == len(all_dfs) - 1: 
-            continue
-        merged_df = merged_df.join(df, on=['Country', 'Year'], how='outer').rename({indicator_label: f"{indicator_label}_left"})
-        merged_df = (
-            merged_df
-            .with_columns([
-                (pl.col(f"{indicator_label}_left").is_not_null() & pl.col(f"{indicator_label}_right").is_not_null())
-                .then((pl.col(f"{indicator_label}_left").add(pl.col(f"{indicator_label}_right"))).truediv(2))
-                .when(pl.col(f"{indicator_label}_left").is_not_null())
-                .then(pl.col(f"{indicator_label}_left"))
-                .when(pl.col(f"{indicator_label}_right").is_not_null())
-                .then(pl.col(f"{indicator_label}_right"))
-                .otherwise(None)
-                .alias(indicator_label)
-            ])
-        ).drop([f"{indicator_label}_left", f"{indicator_label}_right"])
-    return merged_df
-
-
-def rename_from_abbr_to_full_name(inflation_dict: Dict, all_countries: Dict) -> Dict:
-    abbrv = list(inflation_dict.keys())
+def rename_from_abbr_to_full_name(abbrv_dict: dict, all_countries: dict) -> dict:
+    """Takes the abbreviation key and converts to label key"""
+    abbrv = list(abbrv_dict.keys())
     for key in abbrv:
-        inflation_dict[all_countries["countries"][key]["label"]] = inflation_dict.pop(
-            key
-        )
-    return inflation_dict
+        abbrv_dict[all_countries["countries"][key]["label"]] = abbrv_dict.pop(key)
+    return abbrv_dict
 
 
-def clean_up_indicators_dict(indicators: Dict[str,Dict[str,str]]) -> Dict:
+def clean_up_indicators_dict(indicators: dict[str, dict[str, str]]) -> dict:
+    """Apply formatting to the unit and label of indicators"""
     for indict in indicators:
-        if indicators[indict]['unit'] is not None:
-            indicators[indict]['unit'] = UNIT_FORMATTING[indicators[indict]['unit']]
-        if indicators[indict]['label'] is not None:
-            indicators[indict]['label'] = LABEL_FORMATTING[indicators[indict]['label']]
-    return indicators 
+        if (
+            indicators[indict]["unit"] is not None
+            and indicators[indict]["unit"] in UNIT_FORMATTING
+        ):
+            indicators[indict]["unit"] = UNIT_FORMATTING[indicators[indict]["unit"]]
+        if (
+            indicators[indict]["label"] is not None
+            and indicators[indict]["label"] in LABEL_FORMATTING
+        ):
+            indicators[indict]["label"] = LABEL_FORMATTING[indicators[indict]["label"]]
+    return indicators
 
 
-def find_duplicate_indicators(indicators: Dict[str,Dict[str,str]]) -> dict:
-    label_unit_combinations: Dict[tuple, list] = {}
+def find_duplicate_indicators(indicators: dict[str, dict[str, str]]) -> dict:
+    """Find all duplicate indicators"""
+    label_unit_combinations: dict[tuple, list] = {}
     for key, value in indicators.items():
-        label = value.get('label')
-        unit = value.get('unit')
+        label = value.get("label")
+        unit = value.get("unit")
         combination = (label, unit)
-    
+
         if combination in label_unit_combinations:
             label_unit_combinations[combination].append(key)
         else:
             label_unit_combinations[combination] = [key]
-    
+
     # Find duplicates with the same 'label' and 'unit'.
-    return {comb: keys for comb, keys in label_unit_combinations.items() if len(keys) > 1}
+    return {
+        comb: keys for comb, keys in label_unit_combinations.items() if len(keys) > 1
+    }
 
-    
-def find_outliers_IQR(df: pd.DataFrame) -> pd.DataFrame:
-    # Calculate the first quartile (Q1) and third quartile (Q3)
-    q1 = df.quantile(0.25, interpolation="midpoint", numeric_only=True)
-    q3 = df.quantile(0.75, interpolation="midpoint", numeric_only=True)
 
-    # Calculate the interquartile range (IQR)
-    IQR = q3 - q1
-
-    # Calculate the lower and upper bounds for outliers
-    outliers = df[((df < (q1 - 1.5 * IQR)) | (df > (q3 + 1.5 * IQR)))]
-    return outliers
+def merge_duplicate_dfs(
+    all_dfs: list[pl.DataFrame], indicator_label: str
+) -> pl.DataFrame:
+    """Merges all the duplicate dictionaries"""
+    merged_df = all_dfs[0]
+    for x, df in enumerate(all_dfs):
+        if x == len(all_dfs) - 1:
+            continue
+        merged_df = merged_df.join(df, on=["Country", "Year"], how="outer").rename(
+            {indicator_label: f"{indicator_label}_left"}
+        )
+        merged_df = (
+            merged_df.with_columns(
+                [
+                    pl.when(
+                        pl.col(f"{indicator_label}_left").is_not_null()
+                        & pl.col(f"{indicator_label}_right").is_not_null()
+                    )
+                    .then(
+                        (
+                            pl.col(f"{indicator_label}_left").add(
+                                pl.col(f"{indicator_label}_right")
+                            )
+                        ).truediv(2)
+                    )
+                    .when(pl.col(f"{indicator_label}_left").is_not_null())
+                    .then(pl.col(f"{indicator_label}_left"))
+                    .when(pl.col(f"{indicator_label}_right").is_not_null())
+                    .then(pl.col(f"{indicator_label}_right"))
+                    .otherwise(None)
+                    .alias(indicator_label)
+                ]
+            )
+        ).drop([f"{indicator_label}_left", f"{indicator_label}_right"])
+    return merged_df
+            
+            # TODO: add logic that raises exception if not enough data
+            # null_cfa = len(all_data_df.select(pl.col('Country', indicator.label)).filter((pl.col("Country").is_in(CFA_FRANC_ZONE)) & (pl.col(indicator.label).is_null())))
+            # null_west_africa = len(all_data_df.select(pl.col('Country', indicator.label)).filter((pl.col("Country").is_in(WEST_AFRICA)) & (pl.col(indicator.label).is_null())))
+            # null_middle_africa = len(all_data_df.select(pl.col('Country', indicator.label)).filter((pl.col("Country").is_in(MIDDLE_AFRICA)) & (pl.col(indicator.label).is_null())))
+            # # logging.debug(
+            # #     f"""Number of null values for CFA FRANC: {null_cfa} \n
+            # #     Number of null values for WEST AFRICA: {null_west_africa} \n
+            # #     Number of null values in MIDDLE AFRICA: {null_middle_africa}"""
+            # # )
+            # print(f"""Number of null values for CFA FRANC: {null_cfa} \n
+            #     Number of null values for WEST AFRICA: {null_west_africa} \n
+            #     Number of null values in MIDDLE AFRICA: {null_middle_africa}""")

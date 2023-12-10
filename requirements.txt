@@ -1,7 +1,6 @@
-pandas
-requests
 bokeh
-statistics
-numpy
+IPython
 jupyter_ai
+numpy
 polars
+requests

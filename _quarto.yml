@@ -1,18 +1,16 @@
 project:
   type: website
+  output-dir: docs
   render:
-    - about.qmd
-    - blog.qmd
-    - index.qmd
     - notebooks/cfa_compared_to_non_cfa.ipynb
     
 website: 
-  navbar: 
-    left:
-      - href: index.qmd
-      - href: blog.qmd
-      - href: about.qmd
-
+  navbar:
+    background: primary
+    search: true
+  search: 
+    location: navbar
+    type: textbox     
 format:
   html:
     theme:
