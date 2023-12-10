@@ -6,6 +6,7 @@ from bokeh.models import (
     ColumnDataSource,
     Title,
     BasicTickFormatter,
+    Label
 )
 from IPython import get_ipython
 
@@ -22,6 +23,8 @@ def generate_graph(
         ("Private Inflows Excluding Direct Investment (% Of GDP)", "Percent"),
         ("Private Outflows Excluding Direct Investment (% Of GDP)", "Percent"),
         ("Real Non-oil GDP Growth", "Annual % change"),
+        ("Current Account Balance", "Billions of U.S. dollars"),
+        ("Primary Net Lending/Borrowing", "% of GDP"),
     ]
     if (metric_name, unit) in no_log_scale_metrics:
         p = figure(
@@ -87,7 +90,6 @@ def generate_graph(
         ]
     )
     p.add_tools(hover)
-
     p.add_layout(
         Title(
             text="CFA African Countries vs. Non-CFA Middle Africa/West Africa Countries \n\n",
@@ -106,6 +108,15 @@ def generate_graph(
             align="center",
         ),
         "above",
+    )
+    p.add_layout(
+        Title(
+            text="Negative values on log scale graphs are represented as transparent lines",
+            text_font_size="8pt",
+            text_align="left",
+            align="left",
+        ),
+        "below",
     )
     p.title.offset = 200
     p.title.align = "center"

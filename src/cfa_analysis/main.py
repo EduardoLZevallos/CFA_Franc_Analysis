@@ -2,7 +2,6 @@
 from typing import Optional
 import logging
 
-from bokeh.io import output_notebook
 from cfa_analysis.data_retrieval import (
     get_country_mapping,
     get_indicators_data,
@@ -19,7 +18,6 @@ from cfa_analysis.analysis import process_single_indicator
 from cfa_analysis.data_classes import Indicator
 from cfa_analysis.constants import SKIP_INDICATORS
 
-output_notebook()
 
 def generate_metric_graphs(only_these_indicators: Optional[list[str]] = None) -> None:
     """Main function"""
@@ -83,8 +81,6 @@ def generate_metric_graphs(only_these_indicators: Optional[list[str]] = None) ->
             logging.debug(
                 f"issue with indicator {indicator.label}, abbrv: {indicator.abbrv}, exception: {e}"
             )
-            # logging.debug(traceback.print_exc())
-
         try:
             process_single_indicator(
                 all_data_df, indicator.label, indicator.unit, indicator.description

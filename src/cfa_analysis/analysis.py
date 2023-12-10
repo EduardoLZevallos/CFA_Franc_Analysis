@@ -104,18 +104,17 @@ def process_single_indicator(
     )
     display(
         Markdown(
-            f"""## {indicator_label} comparison between African CFA Zone Countries to 
-            Non-CFA Middle Africa and Western Africa Countries"""
+            f"""## {indicator_label} comparison between African CFA Zone Countries to Non-CFA Middle Africa and Western Africa Countries"""
         )
     )
     show(p)
-    # intervals_where_median_is_higher, years = analyze_medians(median_df)
-    # display(
-    #     chat_gpt_analyze_results(
-    #         indicator_label,
-    #         years,
-    #         intervals_where_median_is_higher,
-    #         indicator_description,
-    #         indicator_unit,
-    #     )
-    # )
+    intervals_where_median_is_higher, years = analyze_medians(median_df)
+    display(
+        chat_gpt_analyze_results(
+            indicator_label,
+            years,
+            intervals_where_median_is_higher,
+            indicator_description,
+            indicator_unit,
+        )
+    )

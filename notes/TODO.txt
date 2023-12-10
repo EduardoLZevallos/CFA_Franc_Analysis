@@ -1,14 +1,9 @@
 PRIORITY:
-- indicator on graph, telling user about negative numbers formatting
-- move median account balance, primary Net lending/ borrowing to not use log scale.
-- Create Readme make sure assumptions are included in there.
 - pull out logic that checks if we have enough datapoints and work that into this analysis
-
-- find a better way to store keys
 - Read prompt engineering doc from open ai https://platform.openai.com/docs/guides/prompt-engineering  
+
 - fix issue where some chatgpt formatting doesn't respect the two sections
 - to add zeros to the graph can use patch https://github.com/bokeh/bokeh/issues/6536
-- move generate_metric_graphs() to a module
 
 SECOND PRIORITY:
 - consider percentiles, could do a box plot
