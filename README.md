@@ -1,9 +1,6 @@
 # CFA_Franc_Analysis
 Comparing median metrics for cfa franc zone countries and non cfa franc zone countries
 
-# CFA_Franc_Analysis
-Comparing median metrics for cfa franc zone countries and non cfa franc zone countries
-
 ## Data cleanup
 Manaul data analysis was done of the quality of the data, and then added to 'SKIP_INDICATORS' list in constants.py
 ### result of manual analysis of missing data as of 11/12/23, the number shown is the amount of missing data. 
