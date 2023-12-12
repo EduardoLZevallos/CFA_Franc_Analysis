@@ -7,6 +7,7 @@ import polars as pl
 import polars.selectors as cs
 from .constants import CFA_FRANC_ZONE, WEST_AFRICA, MIDDLE_AFRICA
 from .data_cleanup import rename_from_abbr_to_full_name
+from .data_classes import Indicator
 
 
 class InsufficientDataError(Exception):
@@ -136,19 +137,18 @@ def get_imf_data_df(imf_data: dict, indicator: str) -> pl.DataFrame:
 
 def get_all_duplicate_dfs(
     duplicate_combinations: dict[tuple[str, str], list[str]],
-    indicator_label: str,
-    unit: str,
+    indicator: type[Indicator],
     skip_indicators: set,
     countries: dict[str, str],
     all_countries: dict[str, str],
 ) -> list[pl.DataFrame]:
     """Returns a list of dataframes of all indicators that are duplicates"""
     all_dfs = []
-    for indicator_abbrv in duplicate_combinations[(indicator_label, unit)]:
+    for indicator_abbrv in duplicate_combinations[(indicator.label, indicator.unit)]:
         all_dfs.append(
             get_imf_data_df(
                 get_cfa_and_noncfa_data(indicator_abbrv, countries, all_countries),
-                indicator_label,
+                indicator.label,
             )
         )
         skip_indicators.add(indicator_abbrv)

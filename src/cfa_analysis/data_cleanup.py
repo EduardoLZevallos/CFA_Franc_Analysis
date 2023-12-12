@@ -81,16 +81,16 @@ def merge_duplicate_dfs(
             )
         ).drop([f"{indicator_label}_left", f"{indicator_label}_right"])
     return merged_df
-            
-            # TODO: add logic that raises exception if not enough data
-            # null_cfa = len(all_data_df.select(pl.col('Country', indicator.label)).filter((pl.col("Country").is_in(CFA_FRANC_ZONE)) & (pl.col(indicator.label).is_null())))
-            # null_west_africa = len(all_data_df.select(pl.col('Country', indicator.label)).filter((pl.col("Country").is_in(WEST_AFRICA)) & (pl.col(indicator.label).is_null())))
-            # null_middle_africa = len(all_data_df.select(pl.col('Country', indicator.label)).filter((pl.col("Country").is_in(MIDDLE_AFRICA)) & (pl.col(indicator.label).is_null())))
-            # # logging.debug(
-            # #     f"""Number of null values for CFA FRANC: {null_cfa} \n
-            # #     Number of null values for WEST AFRICA: {null_west_africa} \n
-            # #     Number of null values in MIDDLE AFRICA: {null_middle_africa}"""
-            # # )
-            # print(f"""Number of null values for CFA FRANC: {null_cfa} \n
-            #     Number of null values for WEST AFRICA: {null_west_africa} \n
-            #     Number of null values in MIDDLE AFRICA: {null_middle_africa}""")
+
+    # TODO: add logic that raises exception if not enough data
+    # null_cfa = len(all_data_df.select(pl.col('Country', indicator.label)).filter((pl.col("Country").is_in(CFA_FRANC_ZONE)) & (pl.col(indicator.label).is_null())))
+    # null_west_africa = len(all_data_df.select(pl.col('Country', indicator.label)).filter((pl.col("Country").is_in(WEST_AFRICA)) & (pl.col(indicator.label).is_null())))
+    # null_middle_africa = len(all_data_df.select(pl.col('Country', indicator.label)).filter((pl.col("Country").is_in(MIDDLE_AFRICA)) & (pl.col(indicator.label).is_null())))
+    # # logging.debug(
+    # #     f"""Number of null values for CFA FRANC: {null_cfa} \n
+    # #     Number of null values for WEST AFRICA: {null_west_africa} \n
+    # #     Number of null values in MIDDLE AFRICA: {null_middle_africa}"""
+    # # )
+    # print(f"""Number of null values for CFA FRANC: {null_cfa} \n
+    #     Number of null values for WEST AFRICA: {null_west_africa} \n
+    #     Number of null values in MIDDLE AFRICA: {null_middle_africa}""")

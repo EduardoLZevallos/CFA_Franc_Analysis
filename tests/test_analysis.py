@@ -197,47 +197,6 @@ def test_analyze_medians_where_count_is_within_two_so_considered_equal():
 
     # THEN
     assert result == (
-        "CFA and Non CFA countries had roughly an equal amount of intervals where their respective medians was higher",
+        "CFA and Non CFA countries have roughly an equal amount of intervals where their respective medians was higher",
         [1980, 1981, 1982, 1983],
     )
-
-
-# def test_analyze_medians_non_cfa_higher_medians():
-#     # GIVEN
-#     merge_df = pd.DataFrame( {'year': [2019, 2020, 2021],
-#             'median_cfa': [10, 20, 30],
-#             'median_non_cfa': [15, 25, 35]})
-
-#     # WHEN
-#     result = analyze_medians(merge_df)
-
-#     # THEN
-#     expected_result = ("Non Cfa African Franc Zone Countries", [2019, 2020, 2021])
-#     assert result == expected_result
-
-# def test_analyze_medians_cfa_higher_medians():
-#     # GIVEN
-#     merge_df = pd.DataFrame( {'year': [2019, 2020, 2021],
-#             'median_cfa': [20, 26, 36],
-#             'median_non_cfa': [15, 25, 35]})
-
-#     # WHEN
-#     result = analyze_medians(merge_df)
-
-#     # THEN
-#     expected_result = ("Cfa African Franc Zone Countries", [2019, 2020, 2021])
-#     assert result == expected_result
-
-
-# def test_analyze_medians_difference_within_two_so_consider_it_equal():
-#     # GIVEN
-#     merge_df = pd.DataFrame( {'year': [2019, 2020, 2021],
-#             'median_cfa': [14, 26, 36],
-#             'median_non_cfa': [15, 25, 35]})
-
-#     # WHEN
-#     result = analyze_medians(merge_df)
-
-#     # THEN
-#     expected_result = ("CFA and Non CFA were equal", [2019, 2020, 2021])
-#     assert result == expected_result

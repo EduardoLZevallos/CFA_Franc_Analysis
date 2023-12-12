@@ -3,6 +3,7 @@ from unittest.mock import patch, call
 from polars.testing import assert_frame_equal
 import polars as pl
 import pytest
+from cfa_analysis.data_classes import Indicator
 from cfa_analysis.data_retrieval import (
     get_all_metric_data,
     InsufficientDataError,
@@ -21,31 +22,7 @@ class MockResponse:
     def json(self):
         return self.response_dict
 
-
-# @patch("cfa_analysis.data_retrieval.requests.get")
-# def test_get_data_from_imf_valid_url(mock_requests_get):
-#     # GIVEN
-#     mock_requests_get.return_value = MockResponse(200)
-
-#     # WHEN
-#     data = get_data_from_imf("valid_url")
-
-#     # THEN
-#     assert data == {"some": "data"}
-
-
-# @patch("cfa_analysis.data_retrieval.requests.get")
-# def test_get_data_from_imf_invalid_url(mock_requests_get):
-#     # GIVEN
-#     mock_requests_get.return_value = MockResponse(404)
-#     url = "invalid_url"
-
-#     # WHEN
-#     data = get_data_from_imf(url)
-
-#     # THEN
-#     assert data is None
-
+    
 
 @patch("cfa_analysis.data_retrieval.requests.get")
 def test_get_all_metric_data_sucessfully(mock_requests_get):
@@ -608,8 +585,13 @@ def test_get_all_duplicate_dfs(mock_get_imf_data_df, mock_get_cfa_and_noncfa_dat
         ("Government Revenue", "% of GDP"): ["rev", "GGR_G01_GDP_PT"],
         ("Government Expenditure", "% of GDP"): ["exp", "GGX_GDP"],
     }
-    indicator_label = "Government Revenue"
-    unit = "% of GDP"
+    indicator = Indicator(
+        "rev",
+        "the revenue",
+        "Government Revenue",
+        "% of GDP",
+        "the source"
+    )
     skip_indicators = set()
     mock_get_imf_data_df.side_effect = [imf_data_df, imf_data_df]
     mock_get_cfa_and_noncfa_data.side_effect = [cfa_noncfa_data, cfa_noncfa_data]
@@ -638,8 +620,7 @@ def test_get_all_duplicate_dfs(mock_get_imf_data_df, mock_get_cfa_and_noncfa_dat
     # WHEN
     result = get_all_duplicate_dfs(
         duplicate_combinations,
-        indicator_label,
-        unit,
+        indicator,
         skip_indicators,
         countries,
         all_countries,
@@ -656,6 +637,6 @@ def test_get_all_duplicate_dfs(mock_get_imf_data_df, mock_get_cfa_and_noncfa_dat
 
     assert mock_get_imf_data_df.call_count == 2
     mock_get_imf_data_df.assert_has_calls(
-        [call(cfa_noncfa_data, indicator_label), call(cfa_noncfa_data, indicator_label)]
+        [call(cfa_noncfa_data, indicator.label), call(cfa_noncfa_data, indicator.label)]
     )
     assert skip_indicators == {"rev", "GGR_G01_GDP_PT"}

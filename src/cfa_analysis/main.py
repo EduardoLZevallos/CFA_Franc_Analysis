@@ -2,21 +2,21 @@
 from typing import Optional
 import logging
 
-from cfa_analysis.data_retrieval import (
+from .data_retrieval import (
     get_country_mapping,
     get_indicators_data,
     get_all_duplicate_dfs,
     get_imf_data_df,
     get_cfa_and_noncfa_data,
 )
-from cfa_analysis.data_cleanup import (
+from .data_cleanup import (
     clean_up_indicators_dict,
     find_duplicate_indicators,
     merge_duplicate_dfs,
 )
-from cfa_analysis.analysis import process_single_indicator
-from cfa_analysis.data_classes import Indicator
-from cfa_analysis.constants import SKIP_INDICATORS
+from .analysis import process_single_indicator
+from .data_classes import Indicator
+from .constants import SKIP_INDICATORS
 
 
 def generate_metric_graphs(only_these_indicators: Optional[list[str]] = None) -> None:
@@ -64,8 +64,7 @@ def generate_metric_graphs(only_these_indicators: Optional[list[str]] = None) ->
                 all_data_df = merge_duplicate_dfs(
                     get_all_duplicate_dfs(
                         duplicate_indicators,
-                        indicator.label,
-                        indicator.unit,
+                        indicator,
                         processed_dupes,
                         countries,
                         all_countries,
@@ -82,9 +81,7 @@ def generate_metric_graphs(only_these_indicators: Optional[list[str]] = None) ->
                 f"issue with indicator {indicator.label}, abbrv: {indicator.abbrv}, exception: {e}"
             )
         try:
-            process_single_indicator(
-                all_data_df, indicator.label, indicator.unit, indicator.description
-            )
+            process_single_indicator(all_data_df, indicator)
 
         except Exception as e:
             logging.debug(

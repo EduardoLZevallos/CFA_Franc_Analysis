@@ -1,14 +1,10 @@
 """Creates the graphs for imf metrics and generates chatgpt prompt and call"""
-from bokeh.plotting import figure
+
+from IPython.display import display, Markdown
+from bokeh.plotting import figure, show
 from bokeh.io import curdoc
-from bokeh.models import (
-    HoverTool,
-    ColumnDataSource,
-    Title,
-    BasicTickFormatter,
-    Label
-)
-from IPython import get_ipython
+from bokeh.models import HoverTool, ColumnDataSource, Title, BasicTickFormatter, Label
+from .data_classes import Indicator
 
 
 def generate_graph(
@@ -137,40 +133,15 @@ def generate_graph(
     p.min_border = 100
     return p
 
-
-def chat_gpt_analyze_results(
-    indicator: str,
-    years: list[int],
-    intervals_where_median_is_higher: str,
-    description: str,
-    unit: str,
-):  # pragma: no cover
-    """Makes chatgpt call to get definition of indicator and
-    simple based on frequency of when medians are larger"""
-    get_ipython().run_cell_magic(
-        "ai", "openai-chat:gpt-3.5-turbo -r", "reset the chat history"
-    )  # reset the model
-    return get_ipython().run_cell_magic(
-        "ai",
-        "openai-chat:gpt-3.5-turbo -f markdown",
-        f"""
-        In a professional tone resembling that of a Keynesian economist, 
-        provide a structured response with two sections:
-
-        The first section in markdown heading 3 "What is {indicator}?
-        Explain the concept of {indicator}  measured in {unit} and 
-        its significance as an indicator of a country's economic activity. 
-        Reference the definition: {description}. 
-        What is the significance of the {indicator} and 
-        how does it impact a country's economic health? 
-        Please elaborate on the implications of higher and lower {indicator}. 
-
-        The second section in markdown heading 3 "Conclusion"
-        Considering if it is better for economic developement for {indicator} to be higher or lower, 
-        for {indicator} {intervals_where_median_is_higher} had more yearly intervals 
-        with a higher median from {years[0]} to {years[-1]}. 
-        Please draw a concise conclusion about economic development comparing 
-        African CFA Zone Countries to Non-CFA Middle Africa and Western Africa Countries. 
-        Do not suggest the need for further comprehensive analysis. 
-        """,
+def display_indicator_report(p: figure, definition: Markdown, conclusion: Markdown):
+    display(
+        Markdown(
+            f"""## {indicator.label} comparison between African CFA Zone Countries to Non-CFA Middle Africa and Western Africa Countries"""
+        )
     )
+    show(p)
+    display(Markdown(f"### Definition of {indicator.label}"))
+    display(definition)
+    display(Markdown(f"### Comparing Median Intervals for indicator {indicator.label}"))
+    display(conclusion)
+
