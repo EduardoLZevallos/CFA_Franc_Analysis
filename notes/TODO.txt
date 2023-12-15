@@ -1,13 +1,4 @@
 PRIORITY:
 - pull out logic that checks if we have enough datapoints and work that into this analysis
-- Read prompt engineering doc from open ai https://platform.openai.com/docs/guides/prompt-engineering  
-
-- fix issue where some chatgpt formatting doesn't respect the two sections
-- to add zeros to the graph can use patch https://github.com/bokeh/bokeh/issues/6536
-
-SECOND PRIORITY:
-- consider percentiles, could do a box plot
-- graph the confidence intervals - MAKES NO SENSE - but break that out into another notebook and save it
+- try recursive prompt
 - set up drone
-- review prompt from gpt4 about analyzing results - might want to graph confidence intervals https://stackoverflow.com/questions/71916767/how-to-plot-confidence-interval-of-a-time-series-data-in-python 
-- https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjSz5mNp5qCAxW8FFkFHRYyC9AQFnoECBgQAQ&url=https%3A%2F%2Fwww.elibrary.imf.org%2Fdownloadpdf%2Fbook%2F9781589066755%2Fch005.pdf&usg=AOvVaw2_0dmxOSG60i6sJfHjELfI&opi=89978449 check out for ideas
