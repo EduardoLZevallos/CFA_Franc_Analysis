@@ -22,7 +22,6 @@ class MockResponse:
     def json(self):
         return self.response_dict
 
-    
 
 @patch("cfa_analysis.data_retrieval.requests.get")
 def test_get_all_metric_data_sucessfully(mock_requests_get):
@@ -586,11 +585,7 @@ def test_get_all_duplicate_dfs(mock_get_imf_data_df, mock_get_cfa_and_noncfa_dat
         ("Government Expenditure", "% of GDP"): ["exp", "GGX_GDP"],
     }
     indicator = Indicator(
-        "rev",
-        "the revenue",
-        "Government Revenue",
-        "% of GDP",
-        "the source"
+        "rev", "the revenue", "Government Revenue", "% of GDP", "the source"
     )
     skip_indicators = set()
     mock_get_imf_data_df.side_effect = [imf_data_df, imf_data_df]

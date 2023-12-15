@@ -143,7 +143,7 @@ def test_analyze_medians_CFA_has_more_intervals_where_median_is_higher():
     result = analyze_medians(median_df)
 
     # THEN
-    assert result == ("African CFA Countries", [1980, 1981, 1982, 1983])
+    assert result == ("CFA franc zone countries", [1980, 1981, 1982, 1983])
 
 
 def test_analyze_medians_Non_CFA_has_more_intervals_where_median_is_higher():
@@ -169,7 +169,7 @@ def test_analyze_medians_Non_CFA_has_more_intervals_where_median_is_higher():
 
     # THEN
     assert result == (
-        "Non-CFA Middle Africa and Western Africa Countries",
+        "non-CFA middle/west Africa countries",
         [1980, 1981, 1982, 1983],
     )
 
@@ -197,6 +197,6 @@ def test_analyze_medians_where_count_is_within_two_so_considered_equal():
 
     # THEN
     assert result == (
-        "CFA and Non CFA countries have roughly an equal amount of intervals where their respective medians was higher",
+        "CFA franc zone and non-CFA middle/west Africa countries have roughly an equal amount of intervals where their respective medians was higher",
         [1980, 1981, 1982, 1983],
     )
