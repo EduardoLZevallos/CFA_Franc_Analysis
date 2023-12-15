@@ -133,7 +133,8 @@ def generate_graph(
     p.min_border = 100
     return p
 
-def display_indicator_report(p: figure, definition: Markdown, conclusion: Markdown):
+
+def display_indicator_report(p: figure, definition: Markdown, conclusion: Markdown, indicator: type[Indicator]):
     display(
         Markdown(
             f"""## {indicator.label} comparison between African CFA Zone Countries to Non-CFA Middle Africa and Western Africa Countries"""
@@ -144,4 +145,3 @@ def display_indicator_report(p: figure, definition: Markdown, conclusion: Markdo
     display(definition)
     display(Markdown(f"### Comparing Median Intervals for indicator {indicator.label}"))
     display(conclusion)
-
