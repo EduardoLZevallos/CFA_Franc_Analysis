@@ -89,12 +89,26 @@ def analyze_medians(merged_df: pl.DataFrame) -> tuple:
 
 
 def chat_gpt_analyze_results(
+    median_df: pl.DataFrame,
     indicator: type[Indicator],
     years: list[int],
     intervals_where_median_is_higher: str,
 ):  # pragma: no cover
     """Makes chatgpt call to get definition of indicator and
     simple based on frequency of when medians are larger"""
+    
+    cfa_franc_zone_background = """The CFA franc, originally the French African Colonial franc, was created in 1945 and imposed on France's colonies. The CFA franc zone of today is an area of monetary cooperation, comprised of two African economic zones: the West Africa Economic and Monetary Union (WAEMU) and the Central African Economic and Monetary Union (CEMAC), along with Comoros. It should be noted that since 1993, the two CFA francs and the Comorian franc cannot be exchanged for one another. To exchange one currency for the other, it must first be converted to euros. This additional step in conversion creates additional demand for euros, which consequently acts as a privileged intermediary in trade between the African countries. Overall, more than 162 million people use the two CFA francs.<br>
+    
+    Key decisions concerning the CFA franc zone are made in Paris. The central actor in this system is the French Treasury. All foreign exchange transactions (the purchase or sale of CFA francs) of the 15 countries in the franc zone must go through the French Treasury due to the French guarantee of unlimited convertibility of CFA francs into euros. This makes France the only country in the world that directly manages a set of currencies distinct from its own.<br>
+    
+    The CFA franc zone is based on four interrelated principles: the fixed exchange rate, the free movement of capital, the free convertibility of the currency, and the centralization of foreign exchange reserves.<br>
+    
+    Supporters of the CFA franc system suggest that it provides monetary stability, economic attractiveness, investment inflows, and an increase in the growth rate.<br>
+    
+    The idea that the CFA franc promotes growth and development has been widely touted by the Bank of France. In 2015, the Bank of France stated, "For over forty years, the franc zone has been an instrument of solidarity and development aimed at consolidating growth, reducing poverty, and deepening regional integration." Additionally, in 2012, Christian Noyer, the governor of the Bank of France, remarked, "The last fifty years have shown that the franc zone is a favorable factor for development."<br> 
+    
+    However, the CFA franc zone has four major downsides for the countries that are part of it: an excessively rigid exchange rate regime, a problematic pegging to the euro, the underfinancing of African economies, and a free movement of capital that generates a massive financial bleed-out.<br> """
+    
     get_ipython().run_cell_magic(
         "ai", "openai-chat:gpt-3.5-turbo -r", "reset the chat history"
     )  # reset the model else we run out of tokens
@@ -114,7 +128,8 @@ def chat_gpt_analyze_results(
                 In a professional tone, thinking like a keynesian economist. 
                 Do not mention keynesian economist in your response.
                 Non-CFA middle/west Africa countries are countries that are not in the cfa franc zone. 
-        
+                Here is additional context about the CFA franc zone: {cfa_franc_zone_background}
+                Here is additional context, a dataframe with the median {indicator.label} from {years[0]} to {years[-1]} for CFA franc zone and non-CFA franc:{median_df}
                 step 1 - Does a higher {indicator.label} promote economic growth and development?  
         
                 step 2 - Based on your response to step 1,
@@ -141,6 +156,6 @@ def process_single_indicator(
     )
     intervals_where_median_is_higher, years = analyze_medians(median_df)
     definition, conclusion = chat_gpt_analyze_results(
-        indicator, years, intervals_where_median_is_higher
+         median_df.drop(['abs_cfa_median', 'abs_noncfa_median']), indicator, years, intervals_where_median_is_higher
     )
     display_indicator_report(p, definition, conclusion, indicator)
