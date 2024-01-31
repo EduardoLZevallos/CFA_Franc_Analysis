@@ -13,7 +13,8 @@ from .data_classes import Indicator
 class InsufficientDataError(Exception):
     """Exception raised if query returns datas for fewer than 80% of requested countries"""
 
-
+def test():
+    print("hello world")
 def get_all_metric_data(country_list: list, metric_abbr: str, countries: dict) -> dict:
     """Generates url link necessary for imf query"""
     try:

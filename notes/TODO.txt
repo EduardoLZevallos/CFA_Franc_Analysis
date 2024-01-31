@@ -1,4 +1,0 @@
-PRIORITY:
-- pull out logic that checks if we have enough datapoints and work that into this analysis
-- try recursive prompt
-- set up drone
